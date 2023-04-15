@@ -1,0 +1,4 @@
+template_system = "./nuclei2issues_system.tmpl"
+template_user = "./nuclei2issues_user.tmpl"
+max_tokens = 2048
+model = "gpt-3.5-turbo"

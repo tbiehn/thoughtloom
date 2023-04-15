@@ -1,0 +1,4 @@
+template_system = "./system.tmpl"
+template_user = "./user.tmpl"
+max_tokens = 4000
+model = "gpt-4"

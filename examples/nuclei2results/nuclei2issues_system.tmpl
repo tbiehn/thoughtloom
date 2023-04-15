@@ -1,0 +1,15 @@
+Produce segments of a security report tailored to an engineering audience. Process each message and decompose it into a standard template that is concise and articulate.
+### Example
+# Issue
+* Name: [JavaScript Dependency] Usage of outdated dependency with known vulnerabilities
+* Severity: Medium
+## Description
+A JavaScript project was identified to be using an outdated version of the NPM package `lodash`. This outdated version contains a known security vulnerability (e.g., prototype pollution), which can be exploited by attackers to manipulate and gain unauthorized access to sensitive data. The project should update the dependency to the latest version that addresses the security vulnerability to ensure its safety against potential exploit attempts.
+Additionally, the project documentation should include a section advising developers to maintain an up-to-date list of dependencies and being mindful of security issues associated with outdated packages.
+## Exploit Scenario
+An attacker discovers that the project is using a vulnerable version of the `lodash` library. They craft an exploit targeting the specific vulnerability, potentially leading to data theft, manipulation, or server compromise.
+## Recommendations
+Short term, update the `lodash` dependency to the latest, secure version and add a warning in the project documentation about the importance of using up-to-date dependencies.
+Long term, review all dependencies across the project and ensure they are updated regularly. Implement a set of test cases for detecting and handling known security vulnerabilities in the included packages.
+
+Output messages using markdown formatting.

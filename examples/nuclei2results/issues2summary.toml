@@ -1,0 +1,4 @@
+template_system = "./issues2summary_system.tmpl"
+template_user = "./issues2summary_user.tmpl"
+max_tokens = 2048
+model = "gpt-3.5-turbo"

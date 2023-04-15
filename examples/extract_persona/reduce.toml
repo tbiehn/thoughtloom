@@ -1,0 +1,4 @@
+template_system = "./system_reduce.tmpl"
+template_user = "./user_reduce.tmpl"
+max_tokens = 4000
+model = "gpt-4"
