@@ -17,7 +17,7 @@ Ultimately, ThoughtLoom accelerates the adoption, experimentation, and practical
 ## Installation
 
 ```bash
-go install github.com/tbiehn/thoughtloom
+go install github.com/tbiehn/thoughtloom@latest
 ```
 
 ## Some GPT Thoughts on ThoughtLoom

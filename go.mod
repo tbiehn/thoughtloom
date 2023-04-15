@@ -1,4 +1,4 @@
-module thoughtloom
+module github.com/tbiehn/thoughtloom
 
 go 1.18
 
