@@ -1,6 +1,8 @@
-# Crypto Prices Example
+# Crypto Price Analysis with ThoughtLoom
 
 This example demonstrates how to use ThoughtLoom to transform a few cryptocurrency prices into a buy or sell rationale.
+
+![Demo](demo.gif)
 
 ## Directory Structure
 

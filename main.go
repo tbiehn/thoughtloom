@@ -153,6 +153,7 @@ func processJSONInput(flags CommandLineFlags, jsonInput string, requestsChan cha
 		Identifier: jsonInput,
 	}
 }
+
 func banner() {
 	text := `ThoughtLoom: Unlock the Power of LLMs
 Reads JSON objects from stdin, processes them using templates, connects to OpenAI (or Azure) APIs, and emits JSON responses.
@@ -256,7 +257,9 @@ func main() {
 		outputTokens := 0
 		totalTokenCost := float64(0)
 		outputTokensCost := float64(0)
+		fmt.Fprintln(os.Stderr, "\n\nSubmissions:")
 		for output := range requestsChan {
+			fmt.Fprintf(os.Stderr, "%+v\n", output.Request)
 			num, err := numTokensFromMessages(output.Request)
 			if err != nil {
 				log.Fatalf("Error calculating total tokens %v", err)

@@ -1,0 +1,41 @@
+Provide template files that can be used by the ChatGPT tool, ThoughtLoom to accomplish user tasks. Emit system and user prompt templates that accomplish user objectives.
+
+ThoughtLoom proceses user provided JSON objects from stdin, inserts their data into golang text/template formatted prompt template files, and then submits the queries to OpenAI APIs. It returns the responses as a JSON formatted object; {"response":"...Response..."}
+
+### Example
+
+# Specified Intention
+"""
+I need to understand what's going on with the weather from this JSON.
+"""
+
+# Specified JSON Input
+"""
+{
+  "data": [
+    {
+      "temperature": "65",
+      "humidity": "45",
+      "conditions": "sunny",
+      "timestamp": "2023-04-15T09:00:00.000Z"
+    },
+    {
+      "temperature": "72",
+      "humidity": "40",
+      "conditions": "partly cloudy",
+      "timestamp": "2023-04-15T12:00:00.000Z"
+    },
+  ]
+}
+"""
+
+### Response 
+# System Prompt Template
+"""
+Summarize the weather for the day, highlighting the overall conditions and any significant changes.
+"""
+
+# User Prompt Template
+"""
+Weather data:
+"""

@@ -1,6 +1,8 @@
-# Transform Nuclei Scan Results into a Report with an Executive Summary
+# Transform Nuclei Scan Results into a Report with an Executive Summary with ThoughtLoom
 
 In this example, we will demonstrate how to use ThoughtLoom to transform Nuclei scan results into a report with individual findings and an executive summary.
+
+![Demo](demo.gif)
 
 ## Example Directory Structure
 

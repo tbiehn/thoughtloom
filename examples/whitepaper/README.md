@@ -1,4 +1,4 @@
-# ThoughtLoom Whitepaper Example
+# Whitepaper Generation with ThougtLoom
 
 This example demonstrates how to use ThoughtLoom to generate a full whitepaper from just a few bullet points.
 

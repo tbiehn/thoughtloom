@@ -6,6 +6,8 @@ By using ThoughtLoom's template system, teams can coordinate and fine-tune the m
 
 Ultimately, ThoughtLoom accelerates the adoption, experimentation, and practical use of LLMs by providing a flexible, user-friendly environment to build and share LLM-based tools. It's an invaluable resource for anyone looking to harness the power of language models in their daily work, whether for personal, team, or enterprise applications.
 
+![Demo](extract_persona/demo.gif)
+
 ## Features
 
 - Puts the power of OpenAI chat-gpt APIs in your terminal
@@ -57,7 +59,7 @@ _WARNING: API requests may incur costs. Use the flag '-d' to estimate your poten
 
 ### Configs and Templates
 
-Configuration files are `toml` that specify specify specific templates to use when turning JSON inputs into OpenAI queries. They can specify all the parameters to a chat model.
+Configuration files are `toml` that specify templates to use when turning JSON inputs into OpenAI queries.
 
 ```toml
 # Required parameters
@@ -171,19 +173,19 @@ Our nuceli2results example processes each nuclei finding in parallel, summarizes
 
 Check out the following examples in `./examples/`
 
-### Crypto Prices Example
+### Crypto Prices
 
 This example demonstrates how to use ThoughtLoom to transform a few cryptocurrency prices into a buy or sell rationale.
 
-### Extract Author Persona Example
+### Extract Author Persona
 
 This example demonstrates how to use ThoughtLoom to analyze a set of writing samples and generate a summary of the author's persona and writing style. The script processes each article to extract author persona insights and then summarizes them into a single description, helping LLMs emulate the author's distinct style, perspective, and philosophical impulses.
 
-### ThoughtLoom: Transform Nuclei Scan Results into a Report with an Executive Summary
+### Transform Nuclei Scan Results into a Report with an Executive Summary
 
-In this example, we will demonstrate how to use ThoughtLoom to transform Nuclei scan results into a report with individual findings and an executive summary.
+This example demonstrates how to use ThoughtLoom to transform Nuclei scan results into a report with individual findings and an executive summary.
 
-### ThoughtLoom Whitepaper Example
+### Generate a Whitepaper
 
 This example demonstrates how to use ThoughtLoom to generate a full whitepaper from just a few bullet points.
 

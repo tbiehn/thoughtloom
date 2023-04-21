@@ -1,0 +1,27 @@
+Good day, folks! Here's your 7-day forecast, filled with all the details you need:
+
+Latitude: {{.latitude}}
+Longitude: {{.longitude}}
+Timezone: {{.timezone}} ({{.timezone_abbreviation}})
+
+Current Weather:
+Temperature: {{.current_weather.temperature}}°C
+Windspeed: {{.current_weather.windspeed}} km/h
+Wind direction: {{.current_weather.winddirection}}°
+Weather code: {{.current_weather.weathercode}}
+Is day: {{.current_weather.is_day}}
+Time: {{.current_weather.time}}
+
+Hourly Weather Units:
+Time: {{.hourly_units.time}}
+Temperature (2m): {{.hourly_units.temperature_2m}}
+Relative humidity (2m): {{.hourly_units.relativehumidity_2m}}
+Windspeed (10m): {{.hourly_units.windspeed_10m}}
+
+Hourly Forecast:
+{{range $index, $time := .hourly.time}}
+Time: {{$time}}
+Temperature: {{index $.hourly.temperature_2m $index}}°C
+Relative Humidity: {{index $.hourly.relativehumidity_2m $index}}%
+Windspeed: {{index $.hourly.windspeed_10m $index}} km/h
+{{end}}

@@ -1,6 +1,8 @@
-# Extract Author Persona Example
+# Extract Author Persona with ThoughtLoom
 
 This example demonstrates how to use ThoughtLoom to analyze a set of writing samples and generate a summary of the author's persona and writing style. The script processes each article to extract author persona insights and then summarizes them into a single description, helping LLMs emulate the author's distinct style, perspective, and philosophical impulses.
+
+![Demo](demo.gif)
 
 ## Directory Structure
 
