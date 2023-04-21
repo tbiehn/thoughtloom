@@ -6,7 +6,7 @@ By using ThoughtLoom's template system, teams can coordinate and fine-tune the m
 
 Ultimately, ThoughtLoom accelerates the adoption, experimentation, and practical use of LLMs by providing a flexible, user-friendly environment to build and share LLM-based tools. It's an invaluable resource for anyone looking to harness the power of language models in their daily work, whether for personal, team, or enterprise applications.
 
-![Demo](extract_persona/demo.gif)
+![Demo](examples/extract_persona/demo.gif)
 
 ## Features
 
