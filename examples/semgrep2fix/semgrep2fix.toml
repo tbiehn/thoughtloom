@@ -1,0 +1,16 @@
+max_tokens = 2048
+model = "gpt-3.5-turbo"
+template_system = "./system.tmpl"
+temperature = 0.8
+
+[[template_prompt]] 
+	role = "user"
+	template = "./1shotuser.tmpl"
+
+[[template_prompt]] 
+	role = "assistant"
+	template = "./1shotassistant.tmpl"
+
+[[template_prompt]] 
+	role = "user"
+	template = "./user.tmpl"

@@ -63,8 +63,6 @@ Configuration files are `toml` that specify templates to use when turning JSON i
 
 ```toml
 # Required parameters
-template_system = "./system.tmpl"      # The path to the system prompt template file.
-template_user = "./user.tmpl"          # The path to the user prompt template file.
 max_tokens = 2048                      # The maximum number of tokens for the generated response.
 model = "gpt-3.5-turbo"                # The model to use for text generation, e.g., gpt-3.5-turbo, gpt-4, etc.
 
@@ -73,7 +71,35 @@ temperature = 0.7                      # Controls the randomness of the generate
 top_p = 0.9                            # Controls the nucleus sampling, which limits the token selection to a subset.
 presence_penalty = 0.1                 # Penalty for using the same token multiple times.
 frequency_penalty = 0.1                # Penalty for using tokens that are less common.
+
+template_system = "./system.tmpl"      # The path to the system prompt template file.
+template_user = "./user.tmpl"          # The path to the user prompt template file.
+
 ```
+
+Optionally, few-shot examples can be specified by using a slightly different format;
+
+```toml
+max_tokens = 2048
+model = "gpt-3.5-turbo"
+template_system = "./system.tmpl"
+temperature = 0.8
+
+[[template_prompt]] 
+	role = "user"
+	template = "./1shotuser.tmpl"
+
+[[template_prompt]] 
+	role = "assistant"
+	template = "./1shotassistant.tmpl"
+
+[[template_prompt]] 
+	role = "user"
+	template = "./user.tmpl"
+	
+```
+
+Here `1shotuser.tmpl` and `1shotassistant.tmpl` show an example user query and response. It's one way to do few-shot prompting, refer to the `semgrep2fix` example.
 
 I like to play around with prompts and parameters using the [OpenAI Playground](https://platform.openai.com/playground/p/default-chat) and then throw them into templates and refine.
 
@@ -184,6 +210,10 @@ This example demonstrates how to use ThoughtLoom to analyze a set of writing sam
 ### Transform Nuclei Scan Results into a Report with an Executive Summary
 
 This example demonstrates how to use ThoughtLoom to transform Nuclei scan results into a report with individual findings and an executive summary.
+
+### Generate Code Fix Policies from Semgrep Rules and Examples
+
+This example shows 1-shot prompting that produces a generic code fix policy from the LLM's training set, considering a rule and the code test cases that often accompany them.
 
 ### Generate a Whitepaper
 

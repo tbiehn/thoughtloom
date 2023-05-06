@@ -54,14 +54,19 @@ func setupLogger(logLevel string) {
 }
 
 type Config struct {
-	SystemPromptFile string   `toml:"template_system"`
-	UserPromptFile   string   `toml:"template_user"`
-	Model            string   `toml:"model"`
-	MaxTokens        int      `toml:"max_tokens"`
-	Temperature      *float32 `toml:"temperature,omitempty"`
-	TopP             *float32 `toml:"top_p,omitempty"`
-	PresencePenalty  *float32 `toml:"presence_penalty,omitempty"`
-	FrequencyPenalty *float32 `toml:"frequency_penalty,omitempty"`
+	SystemPromptFile string             `toml:"template_system"`
+	UserPromptFile   string             `toml:"template_user,omitempty"`
+	PromptFiles      []PromptFileConfig `toml:"template_prompt,omitempty"`
+	Model            string             `toml:"model"`
+	MaxTokens        int                `toml:"max_tokens"`
+	Temperature      *float32           `toml:"temperature,omitempty"`
+	TopP             *float32           `toml:"top_p,omitempty"`
+	PresencePenalty  *float32           `toml:"presence_penalty,omitempty"`
+	FrequencyPenalty *float32           `toml:"frequency_penalty,omitempty"`
+}
+type PromptFileConfig struct {
+	Role     string `toml:"role"`
+	Template string `toml:"template"`
 }
 
 func LoadConfig(configPath string) (Config, error) {
@@ -93,11 +98,6 @@ func processJSONInput(flags CommandLineFlags, jsonInput string, requestsChan cha
 		log.Fatalf("Failed to load system template: %v\n", err)
 		return
 	}
-	userTemplate, err := LoadTemplate(filepath.Join(configDir, config.UserPromptFile))
-	if err != nil {
-		log.Fatalf("Failed to load user template: %v\n", err)
-		return
-	}
 
 	// Parse the JSON input
 	var jsonData map[string]interface{}
@@ -111,11 +111,6 @@ func processJSONInput(flags CommandLineFlags, jsonInput string, requestsChan cha
 		log.Fatalf("Failed to render system template: %v\n", err)
 		return
 	}
-	userPrompt, err := RenderTemplate(userTemplate, jsonData)
-	if err != nil {
-		log.Fatalf("Failed to render user template: %v\n", err)
-		return
-	}
 
 	request := openai.ChatCompletionRequest{
 		Messages: []openai.ChatCompletionMessage{
@@ -123,13 +118,66 @@ func processJSONInput(flags CommandLineFlags, jsonInput string, requestsChan cha
 				Role:    openai.ChatMessageRoleSystem,
 				Content: systemPrompt,
 			},
-			{
-				Role:    openai.ChatMessageRoleUser,
-				Content: userPrompt,
-			},
 		},
 		Model:     config.Model,
 		MaxTokens: config.MaxTokens,
+	}
+
+	// Handle old-style configuration
+	if config.UserPromptFile != "" {
+		userTemplate, err := LoadTemplate(filepath.Join(configDir, config.UserPromptFile))
+		if err != nil {
+			log.Fatalf("Failed to load user template: %v\n", err)
+			return
+		}
+		userPrompt, err := RenderTemplate(userTemplate, jsonData)
+		if err != nil {
+			log.Fatalf("Failed to render user template: %v\n", err)
+			return
+		}
+
+		chatMessages := append(request.Messages,
+			openai.ChatCompletionMessage{
+				Role:    openai.ChatMessageRoleUser,
+				Content: string(userPrompt),
+			},
+		)
+		request.Messages = chatMessages
+	}
+
+	// Handle new-style configuration
+	for _, promptFileConfig := range config.PromptFiles {
+		role := openai.ChatMessageRoleUser
+
+		switch strings.ToLower(promptFileConfig.Role) {
+		case "user":
+			role = openai.ChatMessageRoleUser
+			break
+		case "assistant":
+			role = openai.ChatMessageRoleAssistant
+			break
+		default:
+			log.Fatalf("Invalid role in TOML configuration")
+		}
+
+		msgTemplate, err := LoadTemplate(filepath.Join(configDir, promptFileConfig.Template))
+		if err != nil {
+			log.Fatalf("Failed to load message template: %v\n", err)
+			return
+		}
+
+		message, err := RenderTemplate(msgTemplate, jsonData)
+		if err != nil {
+			log.Fatalf("Failed to render message template: %v\n", err)
+			return
+		}
+
+		chatMessages := append(request.Messages, openai.ChatCompletionMessage{
+			Role:    role,
+			Content: string(message),
+		})
+		request.Messages = chatMessages
+
 	}
 
 	if config.Temperature != nil {

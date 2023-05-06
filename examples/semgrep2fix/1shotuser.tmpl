@@ -1,0 +1,51 @@
+### Rules
+rules:
+  - id: unquoted-variable-expansion-in-command
+    languages: [bash]
+    severity: INFO
+    message: >-
+    metadata:
+      category: correctness
+      technology:
+        - bash
+    patterns:
+      - pattern-either:
+          # This is why we need two patterns below.
+          - pattern: |
+              ... ${$VAR} ...
+          - pattern: |
+              ... ...${$VAR}... ...
+      - metavariable-regex:
+          metavariable:
+            $VAR
+            # generally safe: $# $? $$ $! $-
+            # unsafe: $* $@ $0 $15 $_ $foo $FOO
+            # unsafe but tolerated: $_foo $_FOO $_42
+          regex: "[*@0-9]|[A-Za-z].*"
+
+  - id: unquoted-command-substitution-in-command
+    languages: [bash]
+    severity: INFO
+    message: >-
+    metadata:
+      category: correctness
+      technology:
+        - bash
+    patterns:
+      - pattern-either:
+          - pattern: |
+              ... $(...) ...
+          - pattern: |
+              ... ...$(...)... ...
+### Examples
+# ruleid: unquoted-variable-expansion-in-command
+exec $foo
+
+# ok: unquoted-variable-expansion-in-command
+exec "$foo"
+
+# ruleid: unquoted-command-substitution-in-command
+exec `foo`
+
+# ok: unquoted-command-substitution-in-command
+exec "$(foo)"
