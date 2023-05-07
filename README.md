@@ -193,7 +193,7 @@ Some interesting examples selected to demonstrate capability.
 
 Our whitepaper example creates a 'Table of Contents', then 'fans-out' requests across those topics to write a larger article.
 
-Our nuceli2results example processes each nuclei finding in parallel, summarizes, then 'fans-in' to reason across the population of results.
+Our nuclei2results example processes each nuclei finding in parallel, summarizes, then 'fans-in' to reason across the population of results.
 
 ## Provided Examples
 
