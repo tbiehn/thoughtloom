@@ -1,0 +1,9 @@
+--- sample-scripts/sections2paper.sh
++++ sample-scripts/sections2paper.sh
+@@ -19,7 +19,7 @@
+   response=$(jq -sr --argjson index "$i" '.[$index].response' "$json_file")
+-  echo Line: [$first_line]
++  echo "Line: [$first_line]"
+   if [ -n "$response" ]; then
+     responses["$first_line"]="$response"
+   fi

@@ -1,0 +1,14 @@
+# rule: iteration-over-ls-output
+Use globbing instead of iterating over ls output
+# rule: curl-pipe-bash
+Avoid piping untrusted data into `bash` or any other shell. If you must do this, consider checking the SHA sum of the content returned by the server to verify its integrity.
+# rule:useless-cat
+Use '<' and '>' for any command to read from a file or write to a file.
+# rule: ifs-tampering
+Set IFS locally using e.g. 'IFS="," read -a my_array' if you must use 'read' or use a dedicated utility such as 'cut' or 'awk' if you need to split input data.
+# rule: curl-eval
+Avoid using `eval` on the output of `curl` command, especially if the server's contents are not trusted. If you must do it, consider checking the SHA sum of the content returned by the server to verify its integrity.
+# rule: unquoted-variable-expansion-in-command
+Use double quotes to surround the variable "$var". If splitting the variable's content is needed, use a variable starting with an underscore, e.g., $_X instead of $X. If what you need is an array, consider using a proper bash array.
+# rule: unquoted-command-substitution-in-command
+Use double quotes to surround the command substitution "$(var)".

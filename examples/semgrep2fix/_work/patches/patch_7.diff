@@ -1,0 +1,10 @@
+--- sample-scripts/sections2paper.sh
++++ sample-scripts/sections2paper.sh
+@@ -28,7 +28,7 @@
+ while read -r line; do
+-  echo Considering: [$line]
++  echo "Considering: [$line]"
+     if [ -n "$line" ]; then
+     response="${responses["$line"]}"
+     if [ -n "$response" ]; then
+       echo AddingSection: [$response]

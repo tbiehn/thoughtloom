@@ -1,0 +1,10 @@
+--- sample-scripts/sections2paper.sh
++++ sample-scripts/sections2paper.sh
+@@ -14,7 +14,7 @@
+ total_responses=$(jq -sr 'length' "$json_file")
+
+-echo $total_responses
++echo "$total_responses"
+
+ for ((i = 0; i < total_responses; i++)); do
+   first_line=$(jq -sr --argjson index "$i" '.[$index].response | split("\n") | .[0]' "$json_file")

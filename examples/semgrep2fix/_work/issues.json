@@ -1,0 +1,80 @@
+{
+  "check": "useless-cat",
+  "file": "sample-scripts/example.sh",
+  "start": 4,
+  "end": 18,
+  "contents": "# Step 1: Create a working directory\nmkdir -p '_work'\n\n# Step 2: Fetch the last 10 hours of Bitcoin price history and transform it into the desired JSON structure\necho \"Step 1/2: Fetching Bitcoin price history\"\ncurl --location --request GET \"api.coincap.io/v2/assets/bitcoin/history?interval=h1\" | \\\n  jq '{data: [.data[] | {priceUsd: .priceUsd, date: .date}][-10:]}' > '_work/input.json'\n\n# Step 3: Use thoughtloom with the 'buyorsell.toml' configuration to generate output\necho \"Step 2/2: Generating output with thoughtloom\"\n# FIX START [useless-cat]\ncat '_work/input.json' | thoughtloom -c './buyorsell.toml' > '_work/result.json'\n# FIX END [useless-cat]\n\n# Step 4: Print the result\necho \"Printing the result:\"\ncat '_work/result.json' | jq -r .response",
+  "policy": "# rule:useless-cat\nUse '<' and '>' for any command to read from a file or write to a file."
+}
+{
+  "check": "useless-cat",
+  "file": "sample-scripts/example.sh",
+  "start": 8,
+  "end": 18,
+  "contents": "echo \"Step 1/2: Fetching Bitcoin price history\"\ncurl --location --request GET \"api.coincap.io/v2/assets/bitcoin/history?interval=h1\" | \\\n  jq '{data: [.data[] | {priceUsd: .priceUsd, date: .date}][-10:]}' > '_work/input.json'\n\n# Step 3: Use thoughtloom with the 'buyorsell.toml' configuration to generate output\necho \"Step 2/2: Generating output with thoughtloom\"\ncat '_work/input.json' | thoughtloom -c './buyorsell.toml' > '_work/result.json'\n\n# Step 4: Print the result\necho \"Printing the result:\"\n# FIX START [useless-cat]\ncat '_work/result.json' | jq -r .response",
+  "policy": "# rule:useless-cat\nUse '<' and '>' for any command to read from a file or write to a file."
+}
+{
+  "check": "useless-cat",
+  "file": "sample-scripts/example.sh.orig",
+  "start": 4,
+  "end": 18,
+  "contents": "# Step 1: Create a working directory\nmkdir -p '_work'\n\n# Step 2: Fetch the last 10 hours of Bitcoin price history and transform it into the desired JSON structure\necho \"Step 1/2: Fetching Bitcoin price history\"\ncurl --location --request GET \"api.coincap.io/v2/assets/bitcoin/history?interval=h1\" | \\\n  jq '{data: [.data[] | {priceUsd: .priceUsd, date: .date}][-10:]}' > '_work/input.json'\n\n# Step 3: Use thoughtloom with the 'buyorsell.toml' configuration to generate output\necho \"Step 2/2: Generating output with thoughtloom\"\n# FIX START [useless-cat]\ncat '_work/input.json' | thoughtloom -c './buyorsell.toml' > '_work/result.json'\n# FIX END [useless-cat]\n\n# Step 4: Print the result\necho \"Printing the result:\"\ncat '_work/result.json' | jq -r .response",
+  "policy": "# rule:useless-cat\nUse '<' and '>' for any command to read from a file or write to a file."
+}
+{
+  "check": "useless-cat",
+  "file": "sample-scripts/example.sh.orig",
+  "start": 8,
+  "end": 18,
+  "contents": "echo \"Step 1/2: Fetching Bitcoin price history\"\ncurl --location --request GET \"api.coincap.io/v2/assets/bitcoin/history?interval=h1\" | \\\n  jq '{data: [.data[] | {priceUsd: .priceUsd, date: .date}][-10:]}' > '_work/input.json'\n\n# Step 3: Use thoughtloom with the 'buyorsell.toml' configuration to generate output\necho \"Step 2/2: Generating output with thoughtloom\"\ncat '_work/input.json' | thoughtloom -c './buyorsell.toml' > '_work/result.json'\n\n# Step 4: Print the result\necho \"Printing the result:\"\n# FIX START [useless-cat]\ncat '_work/result.json' | jq -r .response",
+  "policy": "# rule:useless-cat\nUse '<' and '>' for any command to read from a file or write to a file."
+}
+{
+  "check": "unquoted-variable-expansion-in-command",
+  "file": "sample-scripts/sections2paper.sh",
+  "start": 7,
+  "end": 27,
+  "contents": "fi\n\njson_file=$1\ntoc_file=$2\noutput_file=$3\n\n# Read the JSON file and extract the responses into an associative array\ndeclare -A responses\ntotal_responses=$(jq -sr 'length' \"$json_file\")\n\n# FIX START [unquoted-variable-expansion-in-command]\necho $total_responses\n# FIX END [unquoted-variable-expansion-in-command]\n\nfor ((i = 0; i < total_responses; i++)); do\n  first_line=$(jq -sr --argjson index \"$i\" '.[$index].response | split(\"\\n\") | .[0]' \"$json_file\")\n  response=$(jq -sr --argjson index \"$i\" '.[$index].response' \"$json_file\")\n  echo Line: [$first_line]\n  if [ -n \"$response\" ]; then\n    responses[\"$first_line\"]=\"$response\"\n  fi\ndone",
+  "policy": "# rule: unquoted-variable-expansion-in-command\nUse double quotes to surround the variable \"$var\". If splitting the variable's content is needed, use a variable starting with an underscore, e.g., $_X instead of $X. If what you need is an array, consider using a proper bash array."
+}
+{
+  "check": "unquoted-variable-expansion-in-command",
+  "file": "sample-scripts/sections2paper.sh",
+  "start": 12,
+  "end": 32,
+  "contents": "\n# Read the JSON file and extract the responses into an associative array\ndeclare -A responses\ntotal_responses=$(jq -sr 'length' \"$json_file\")\n\necho $total_responses\n\nfor ((i = 0; i < total_responses; i++)); do\n  first_line=$(jq -sr --argjson index \"$i\" '.[$index].response | split(\"\\n\") | .[0]' \"$json_file\")\n  response=$(jq -sr --argjson index \"$i\" '.[$index].response' \"$json_file\")\n# FIX START [unquoted-variable-expansion-in-command]\n  echo Line: [$first_line]\n# FIX END [unquoted-variable-expansion-in-command]\n  if [ -n \"$response\" ]; then\n    responses[\"$first_line\"]=\"$response\"\n  fi\ndone\n\n# Read the TOC.md file and concatenate the responses in the correct order\ncombined_responses=\"\"\nwhile read -r line; do\n  echo Considering: [$line]\n    if [ -n \"$line\" ]; then",
+  "policy": "# rule: unquoted-variable-expansion-in-command\nUse double quotes to surround the variable \"$var\". If splitting the variable's content is needed, use a variable starting with an underscore, e.g., $_X instead of $X. If what you need is an array, consider using a proper bash array."
+}
+{
+  "check": "unquoted-variable-expansion-in-command",
+  "file": "sample-scripts/sections2paper.sh",
+  "start": 21,
+  "end": 41,
+  "contents": "  response=$(jq -sr --argjson index \"$i\" '.[$index].response' \"$json_file\")\n  echo Line: [$first_line]\n  if [ -n \"$response\" ]; then\n    responses[\"$first_line\"]=\"$response\"\n  fi\ndone\n\n# Read the TOC.md file and concatenate the responses in the correct order\ncombined_responses=\"\"\nwhile read -r line; do\n# FIX START [unquoted-variable-expansion-in-command]\n  echo Considering: [$line]\n# FIX END [unquoted-variable-expansion-in-command]\n    if [ -n \"$line\" ]; then\n    response=\"${responses[\"$line\"]}\"\n    if [ -n \"$response\" ]; then\n      echo AddingSection: [$response]\n      combined_responses+=\"${response}\\n\\n\"\n    fi\n  fi\ndone < \"$toc_file\"\n\n# Save the combined responses to a text file",
+  "policy": "# rule: unquoted-variable-expansion-in-command\nUse double quotes to surround the variable \"$var\". If splitting the variable's content is needed, use a variable starting with an underscore, e.g., $_X instead of $X. If what you need is an array, consider using a proper bash array."
+}
+{
+  "check": "unquoted-variable-expansion-in-command",
+  "file": "sample-scripts/sections2paper.sh",
+  "start": 25,
+  "end": 42,
+  "contents": "  fi\ndone\n\n# Read the TOC.md file and concatenate the responses in the correct order\ncombined_responses=\"\"\nwhile read -r line; do\n  echo Considering: [$line]\n    if [ -n \"$line\" ]; then\n    response=\"${responses[\"$line\"]}\"\n    if [ -n \"$response\" ]; then\n# FIX START [unquoted-variable-expansion-in-command]\n      echo AddingSection: [$response]\n# FIX END [unquoted-variable-expansion-in-command]\n      combined_responses+=\"${response}\\n\\n\"\n    fi\n  fi\ndone < \"$toc_file\"\n\n# Save the combined responses to a text file\necho -e \"$combined_responses\" > \"$output_file\"",
+  "policy": "# rule: unquoted-variable-expansion-in-command\nUse double quotes to surround the variable \"$var\". If splitting the variable's content is needed, use a variable starting with an underscore, e.g., $_X instead of $X. If what you need is an array, consider using a proper bash array."
+}
+{
+  "check": "unquoted-variable-expansion-in-command",
+  "file": "sample-scripts/vuln2context.sh",
+  "start": 28,
+  "end": 48,
+  "contents": "\n  # Ensure the first_line is not less than 1\n  if [ \"$first_line\" -lt 1 ]; then\n    first_line=1\n  fi\n\n  # Get the contents of the file including FIX START and FIX END comments\n# FIX START [unquoted-variable-expansion-in-command]\n  contents=$(awk -v start_line=$start_line -v first_line=$first_line -v end_line=$end_line -v last_line=$last_line -v check_id=$check_id '\n    NR>=first_line && NR<start_line { print }\n    NR==start_line { printf \"# FIX START [%s]\\n\", check_id; print }\n    NR>start_line && NR<=end_line { print }\n    NR==end_line+1 { printf \"# FIX END [%s]\\n\", check_id; print }\n    NR>end_line+1 && NR<=last_line { print }\n  ' \"$file_path\")\n# FIX END [unquoted-variable-expansion-in-command]\n\n  policy=$(awk -v check_id=$check_id '/^# rule:\\s*/ { in_block = match($0, check_id) } in_block { print }' \"$script_dir/policies.txt\")\n\n  # Create JSON object\n  jq -n \\\n    --arg xcheck \"$check_id\" \\\n    --arg xfile \"$file_path\" \\",
+  "policy": "# rule: unquoted-variable-expansion-in-command\nUse double quotes to surround the variable \"$var\". If splitting the variable's content is needed, use a variable starting with an underscore, e.g., $_X instead of $X. If what you need is an array, consider using a proper bash array."
+}
+{
+  "check": "unquoted-variable-expansion-in-command",
+  "file": "sample-scripts/vuln2context.sh",
+  "start": 33,
+  "end": 53,
+  "contents": "\n  # Get the contents of the file including FIX START and FIX END comments\n  contents=$(awk -v start_line=$start_line -v first_line=$first_line -v end_line=$end_line -v last_line=$last_line -v check_id=$check_id '\n    NR>=first_line && NR<start_line { print }\n    NR==start_line { printf \"# FIX START [%s]\\n\", check_id; print }\n    NR>start_line && NR<=end_line { print }\n    NR==end_line+1 { printf \"# FIX END [%s]\\n\", check_id; print }\n    NR>end_line+1 && NR<=last_line { print }\n  ' \"$file_path\")\n\n# FIX START [unquoted-variable-expansion-in-command]\n  policy=$(awk -v check_id=$check_id '/^# rule:\\s*/ { in_block = match($0, check_id) } in_block { print }' \"$script_dir/policies.txt\")\n# FIX END [unquoted-variable-expansion-in-command]\n\n  # Create JSON object\n  jq -n \\\n    --arg xcheck \"$check_id\" \\\n    --arg xfile \"$file_path\" \\\n    --argjson xstart \"$first_line\" \\\n    --argjson xend \"$last_line\" \\\n    --arg xcontents \"$contents\" \\\n    --arg xpolicy \"$policy\" \\\n    '{check: $xcheck, file: $xfile, start: $xstart, end: $xend, contents: $xcontents, policy: $xpolicy}'",
+  "policy": "# rule: unquoted-variable-expansion-in-command\nUse double quotes to surround the variable \"$var\". If splitting the variable's content is needed, use a variable starting with an underscore, e.g., $_X instead of $X. If what you need is an array, consider using a proper bash array."
+}

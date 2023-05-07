@@ -1,51 +1,29 @@
-### Rules
-rules:
-  - id: unquoted-variable-expansion-in-command
-    languages: [bash]
-    severity: INFO
-    message: >-
-    metadata:
-      category: correctness
-      technology:
-        - bash
-    patterns:
-      - pattern-either:
-          # This is why we need two patterns below.
-          - pattern: |
-              ... ${$VAR} ...
-          - pattern: |
-              ... ...${$VAR}... ...
-      - metavariable-regex:
-          metavariable:
-            $VAR
-            # generally safe: $# $? $$ $! $-
-            # unsafe: $* $@ $0 $15 $_ $foo $FOO
-            # unsafe but tolerated: $_foo $_FOO $_42
-          regex: "[*@0-9]|[A-Za-z].*"
+# Issue
+unquoted-variable-expansion-in-command
+# File
+whitepaper/sections2paper.sh
+# Line Start and End
+25 - 45
+# Code
+```
+# Read the TOC.md file and concatenate the responses in the correct order
+combined_responses=""
+while read -r line; do
+  echo Considering: [$line]
+    if [ -n "$line" ]; then
+    response="${responses["$line"]}"
+    if [ -n "$response" ]; then
+# FIX START [unquoted-variable-expansion-in-command]
+      echo AddingSection: [$response]
+# FIX END [unquoted-variable-expansion-in-command]
+      combined_responses+="${response}\n\n"
+    fi
+  fi
+done < "$toc_file"
 
-  - id: unquoted-command-substitution-in-command
-    languages: [bash]
-    severity: INFO
-    message: >-
-    metadata:
-      category: correctness
-      technology:
-        - bash
-    patterns:
-      - pattern-either:
-          - pattern: |
-              ... $(...) ...
-          - pattern: |
-              ... ...$(...)... ...
-### Examples
-# ruleid: unquoted-variable-expansion-in-command
-exec $foo
-
-# ok: unquoted-variable-expansion-in-command
-exec "$foo"
-
-# ruleid: unquoted-command-substitution-in-command
-exec `foo`
-
-# ok: unquoted-command-substitution-in-command
-exec "$(foo)"
+# Save the combined responses to a text file
+echo -e "$combined_responses" > "$output_file"
+```
+# Policy
+# rule: unquoted-variable-expansion-in-command
+Use double quotes to surround the variable "$var". If splitting the variable's content is needed, use a variable starting with an underscore, e.g., $_X instead of $X. If what you need is an array, consider using a proper bash array.

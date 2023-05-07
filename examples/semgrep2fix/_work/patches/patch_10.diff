@@ -1,0 +1,23 @@
+--- sample-scripts/vuln2context.sh
++++ sample-scripts/vuln2context.sh
+@@ -40,7 +40,7 @@
+   contents=$(awk -v start_line=$start_line -v first_line=$first_line -v end_line=$end_line -v last_line=$last_line -v check_id=$check_id '
+     NR>=first_line && NR<start_line { print }
+     NR==start_line { printf "# FIX START [%s]\n", check_id; print }
+     NR>start_line && NR<=end_line { print }
+     NR==end_line+1 { printf "# FIX END [%s]\n", check_id; print }
+     NR>end_line+1 && NR<=last_line { print }
+   ' "$file_path")
+
+-  policy=$(awk -v check_id=$check_id '/^# rule:\s*/ { in_block = match($0, check_id) } in_block { print }' "$script_dir/policies.txt")
++  policy=$(awk -v check_id="$check_id" '/^# rule:\s*/ { in_block = match($0, check_id) } in_block { print }' "$script_dir/policies.txt")
+
+   # Create JSON object
+   jq -n \
+     --arg xcheck "$check_id" \
+     --arg xfile "$file_path" \
+     --argjson xstart "$first_line" \
+     --argjson xend "$last_line" \
+     --arg xcontents "$contents" \
+     --arg xpolicy "$policy" \
+     '{check: $xcheck, file: $xfile, start: $xstart, end: $xend, contents: $xcontents, policy: $xpolicy}'

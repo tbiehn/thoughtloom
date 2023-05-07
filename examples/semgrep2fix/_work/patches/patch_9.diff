@@ -1,0 +1,18 @@
+--- sample-scripts/vuln2context.sh
++++ sample-scripts/vuln2context.sh
+@@ -35,7 +35,7 @@
+   # Get the contents of the file including FIX START and FIX END comments
+-  contents=$(awk -v start_line=$start_line -v first_line=$first_line -v end_line=$end_line -v last_line=$last_line -v check_id=$check_id '
++  contents=$(awk -v start_line="$start_line" -v first_line="$first_line" -v end_line="$end_line" -v last_line="$last_line" -v check_id="$check_id" '
+     NR>=first_line && NR<start_line { print }
+     NR==start_line { printf "# FIX START [%s]\n", check_id; print }
+     NR>start_line && NR<=end_line { print }
+@@ -43,7 +43,7 @@
+     NR>end_line+1 && NR<=last_line { print }
+   ' "$file_path")
+
+-  policy=$(awk -v check_id=$check_id '/^# rule:\s*/ { in_block = match($0, check_id) } in_block { print }' "$script_dir/policies.txt")
++  policy=$(awk -v check_id="$check_id" '/^# rule:\s*/ { in_block = match($0, check_id) } in_block { print }' "$script_dir/policies.txt")
+
+   # Create JSON object
+   jq -n \

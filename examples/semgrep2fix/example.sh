@@ -1,51 +1,57 @@
 #!/bin/bash
 set -e
 
-# Step 1: Create a working directory
-mkdir -p '_work'
+# Create work directory and set input directory
+mkdir -p _work
+input_dir="_work/patches"
+mkdir -p "$input_dir"
 
-# Step 2: Set the directory containing the file pairs
-dir="./semgrep-sample"
+# Clear the input directory
+rm -rf "$input_dir/*"
 
-# Step 3: Define a function to process file pairs and output a JSON object
-process_file_pair() {
-  local yaml_file="$1"
-  local example_files=("$@") # Array of matched files, excluding the first argument (yaml_file)
-  
-  rules=$(cat "$yaml_file")
-  examples=$(cat "${example_files[@]:1}") # Concatenate all matched files
+# Run Semgrep scan and output issues to issues.json
+semgrep scan ./sample-scripts \
+  --json -q \
+  --no-rewrite-rule-ids \
+  --disable-version-check \
+  --metrics off \
+  --config ./semgrep-sample | ./vuln2context.sh | tee _work/issues.json
 
-  jq -n --arg rules "$rules" --arg examples "$examples" '{rules: $rules, examples: $examples}'
-}
+# Generate fixes using ThoughtLoom and output to fixes.json
+cat ./_work/issues.json | thoughtloom -c ./semgrep2fix.toml > _work/fixes.json
 
-# Step 4: Loop through each pair of files in the directory
-(
-  for yaml_file in "$dir"/*.yaml; do
-    # Get the file name without the extension
-    base_name=$(basename "$yaml_file" .yaml)
+# Print responses from fixes.json
+cat ./_work/fixes.json | jq -r .response
 
-    # Skip .test.yaml or .fix.yaml files.
-    if [[ "$base_name" =~ \. ]]; then
-      continue
-    fi
-    
-    # Find all files that are not the corresponding YAML file
-    matching_files=()
-    for file in "$dir"/"$base_name".*; do
-      if [ "$file" != "$yaml_file" ]; then
-        matching_files+=("$file")
-      fi
-    done
+counter=1
 
-    # Check if there are any matching files
-    if [ ${#matching_files[@]} -gt 0 ]; then
-      process_file_pair "$yaml_file" "${matching_files[@]}"
-    else
-      echo "No matching files found for $base_name.yaml" >&2
-    fi
+# Iterate through responses and create patch files
+cat ./_work/fixes.json | jq -c 'select(has("response"))' | while IFS= read -r line; do
+  response=$(echo "$line" | jq -r '.response')
+  if [[ -n "$response" ]]; then
+    content=$(echo "$response" | sed -n '/```diff/,/```/ p' | sed '1d;$d')
+    echo "$content" > "$input_dir/patch_$counter.diff"
+    counter=$((counter + 1))
+  fi
+done
 
-  done
-) | thoughtloom -c './semgrep2fix.toml' > "./_work/results.json"
+set +e
 
-# Step 5: Print the results
-cat "./_work/results.json" | jq -r .response
+fuzz_factor=5
+
+# Apply patches with a fuzz factor
+for patch in "$input_dir"/*.diff; do
+  patch_name=$(basename "$patch")
+  echo "Applying $patch_name with a fuzz factor of $fuzz_factor..."
+
+  # Try applying the patch with the specified fuzz factor and capture the success status
+  patch -p0 -l --dry-run --fuzz=$fuzz_factor < "$patch" 
+  success=$?
+
+  # Report the patch application success or failure
+  if [ $success -eq 0 ]; then
+    echo "Applied $patch_name successfully."
+  else
+    echo "Failed to apply $patch_name."
+  fi
+done

@@ -215,6 +215,10 @@ This example demonstrates how to use ThoughtLoom to transform Nuclei scan result
 
 This example shows 1-shot prompting that produces a generic code fix policy from the LLM's training set, considering a rule and the code test cases that often accompany them.
 
+### Generate Code Fix Patches from Semgrep Issues
+
+This example shows how to automatically generate policy-following patches for defects identified with semgrep using ThoughtLoom.
+
 ### Generate a Whitepaper
 
 This example demonstrates how to use ThoughtLoom to generate a full whitepaper from just a few bullet points.

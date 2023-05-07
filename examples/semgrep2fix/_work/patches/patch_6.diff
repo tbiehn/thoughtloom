@@ -1,6 +1,5 @@
-```diff
---- whitepaper/sections2paper.sh
-+++ whitepaper/sections2paper.sh
+--- sample-scripts/sections2paper.sh
++++ sample-scripts/sections2paper.sh
 @@ -32,7 +32,7 @@
      if [ -n "$response" ]; then
 -      echo AddingSection: [$response]
@@ -8,4 +7,3 @@
        combined_responses+="${response}\n\n"
      fi
    fi
-```

@@ -55,8 +55,8 @@ func setupLogger(logLevel string) {
 
 type Config struct {
 	SystemPromptFile string             `toml:"template_system"`
-	UserPromptFile   string             `toml:"template_user,omitempty"`
-	PromptFiles      []PromptFileConfig `toml:"template_prompt,omitempty"`
+	UserPromptFile   string             `toml:"template_user"`
+	PromptFiles      []PromptFileConfig `toml:"template_prompt"`
 	Model            string             `toml:"model"`
 	MaxTokens        int                `toml:"max_tokens"`
 	Temperature      *float32           `toml:"temperature,omitempty"`
@@ -436,7 +436,7 @@ func numTokensFromMessages(request openai.ChatCompletionRequest) (int, error) {
 		tokensPerMessage = 3
 		tokensPerName = 1
 	} else {
-		return 0, fmt.Errorf("num_tokens_from_messages() is not implemented for model %s. See https://github.com/openai/openai-python/blob/main/chatml.md for information on how messages are converted to tokens.", model)
+		return 0, fmt.Errorf("numTokensFromMessages() is not implemented for model %s. See https://github.com/openai/openai-python/blob/main/chatml.md for information on how messages are converted to tokens.", model)
 	}
 
 	numTokens := 0
