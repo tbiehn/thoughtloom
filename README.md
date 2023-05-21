@@ -218,7 +218,7 @@ or,
 jq -r .response < result_weather.json
 ```
 
-```bash
+```
 The weather for the day started as sunny with a temperature of 65°F and a humidity of 45%. Later in the day, around noon, the temperature rose to 72°F and the weather became partly cloudy. In the afternoon, around 3 pm, the weather became sunny again with a temperature of 76°F and a humidity of 35%. Overall, the day remained mostly sunny with a gradual increase in temperature and a decrease in humidity as the day progressed.
 ```
 
