@@ -184,6 +184,43 @@ Weather data:
 cat 'input_weather.json' | thoughtloom -c './weather.toml' > 'result_weather.json'
 ```
 
+6. Check the results
+
+```bash
+jq < result_weather.json
+```
+
+```json
+{
+  "request": {
+    "model": "gpt-3.5-turbo",
+    "messages": [
+      {
+        "role": "system",
+        "content": "Summarize the weather for the day, highlighting the overall conditions and any significant changes.\n"
+      },
+      {
+        "role": "user",
+        "content": "Weather data:\n\n- Temperature: 65°F, Humidity: 45%, Conditions: sunny, Timestamp: (2023-04-15T09:00:00.000Z)\n\n- Temperature: 72°F, Humidity: 40%, Conditions: partly cloudy, Timestamp: (2023-04-15T12:00:00.000Z)\n\n- Temperature: 76°F, Humidity: 35%, Conditions: sunny, Timestamp: (2023-04-15T15:00:00.000Z)\n\n"
+      }
+    ],
+    "max_tokens": 2048
+  },
+  "response": "The weather for the day started as sunny with a temperature of 65°F and a humidity of 45%. Later in the day, around noon, the temperature rose to 72°F and the weather became partly cloudy. In the afternoon, around 3 pm, the weather became sunny again with a temperature of 76°F and a humidity of 35%. Overall, the day remained mostly sunny with a gradual increase in temperature and a decrease in humidity as the day progressed.",
+  "identifier": "{\"data\":[{\"conditions\":\"sunny\",\"humidity\":\"45\",\"temperature\":\"65\",\"timestamp\":\"2023-04-15T09:00:00.000Z\"},{\"conditions\":\"partly cloudy\",\"humidity\":\"40\",\"temperature\":\"72\",\"timestamp\":\"2023-04-15T12:00:00.000Z\"},{\"conditions\":\"sunny\",\"humidity\":\"35\",\"temperature\":\"76\",\"timestamp\":\"2023-04-15T15:00:00.000Z\"}]}",
+  "finish_reason": "stop"
+}
+```
+
+or,
+
+```bash
+jq -r .response < result_weather.json
+```
+
+```bash
+The weather for the day started as sunny with a temperature of 65°F and a humidity of 45%. Later in the day, around noon, the temperature rose to 72°F and the weather became partly cloudy. In the afternoon, around 3 pm, the weather became sunny again with a temperature of 76°F and a humidity of 35%. Overall, the day remained mostly sunny with a gradual increase in temperature and a decrease in humidity as the day progressed.
+```
 
 ## Selected Examples
 
