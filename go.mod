@@ -8,7 +8,7 @@ require (
 	github.com/pkoukk/tiktoken-go v0.1.3
 	github.com/sashabaranov/go-openai v1.11.3
 	github.com/sirupsen/logrus v1.9.3
-	github.com/tbiehn/gptparallel v0.2.6
+	github.com/tbiehn/gptparallel v0.2.9
 	github.com/vbauerster/mpb/v8 v8.4.0
 	github.com/xeipuuv/gojsonschema v1.2.0
 	golang.org/x/text v0.10.0
