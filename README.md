@@ -101,6 +101,29 @@ temperature = 0.8
 
 Here `1shotuser.tmpl` and `1shotassistant.tmpl` show an example user query and response. It's one way to do few-shot prompting, refer to the `semgrep2fix` example.
 
+ThoughtLoom supports function calls with capable models (such as `gpt-3.5-turbo-0613` and `gpt-4-0613`). The parameters field must contain a valid JSON Schema document. You can define one or more functions that the model can choose to call using the following format;
+
+```toml
+[[functions]]
+	name = "insert"
+	description = "Insert a row containing the user input in the database"
+	parameters = '''
+{
+	"type": "object",
+	"required": ["content"],
+	"properties": {
+		"content": {
+			"type": "string",
+			"description": "The user's input."
+		},
+		"unit": {"type": "string", "enum": ["celsius", "fahrenheit"]}
+	}
+}
+'''
+```
+
+An example can be found in the `functionExample` example. Function calls will be returned in `function_name` and `function_params` values in the emitted objects - with a finish reason of `function_call`. The model may also emit some text, which will be in `response` as usual. We attempt to validate the parameters against the model's produced response. If this validation fails we change finish reason to `invalid_function_call`.
+
 I like to play around with prompts and parameters using the [OpenAI Playground](https://platform.openai.com/playground/p/default-chat) and then throw them into templates and refine.
 
 Template files are simple golang `text/template` files that get passed in 'inflated' JSON objects. You'll see what that looks like best by examing our 'Creating a Job' example.

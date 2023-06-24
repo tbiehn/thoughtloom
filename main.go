@@ -13,6 +13,8 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/xeipuuv/gojsonschema"
+
 	"golang.org/x/text/unicode/norm"
 
 	"github.com/pkoukk/tiktoken-go"
@@ -54,20 +56,31 @@ func setupLogger(logLevel string) {
 }
 
 type Config struct {
-	SystemPromptFile string             `toml:"template_system"`
-	UserPromptFile   string             `toml:"template_user"`
-	PromptFiles      []PromptFileConfig `toml:"template_prompt"`
-	Model            string             `toml:"model"`
-	MaxTokens        int                `toml:"max_tokens"`
-	Temperature      *float32           `toml:"temperature,omitempty"`
-	TopP             *float32           `toml:"top_p,omitempty"`
-	PresencePenalty  *float32           `toml:"presence_penalty,omitempty"`
-	FrequencyPenalty *float32           `toml:"frequency_penalty,omitempty"`
+	SystemPromptFile string               `toml:"template_system"`
+	UserPromptFile   string               `toml:"template_user"`
+	PromptFiles      []PromptFileConfig   `toml:"template_prompt"`
+	Functions        []FunctionFileConfig `toml:"functions"`
+	Model            string               `toml:"model"`
+	MaxTokens        int                  `toml:"max_tokens"`
+	Temperature      *float32             `toml:"temperature,omitempty"`
+	TopP             *float32             `toml:"top_p,omitempty"`
+	PresencePenalty  *float32             `toml:"presence_penalty,omitempty"`
+	FrequencyPenalty *float32             `toml:"frequency_penalty,omitempty"`
 }
+
 type PromptFileConfig struct {
 	Role     string `toml:"role"`
 	Template string `toml:"template"`
 }
+
+type FunctionFileConfig struct {
+	Name        string `toml:"name"`
+	Description string `toml:"description"`
+	Parameters  string `toml:"parameters"`
+}
+
+//Stores the function names, and their json spec documents for validating outputs.
+var functionMap = make(map[string]string)
 
 func LoadConfig(configPath string) (Config, error) {
 	var config Config
@@ -180,6 +193,29 @@ func processJSONInput(flags CommandLineFlags, jsonInput string, requestsChan cha
 
 	}
 
+	//log.Println("Lookin for fns")
+	for _, fnDef := range config.Functions {
+		//log.Println("Loaded function spec", fnDef.Name, fnDef.Description)
+
+		var parameterIf interface{}
+		err := json.Unmarshal([]byte(fnDef.Parameters), &parameterIf)
+		if err != nil {
+			log.Fatal("Invalid function spec for function: ", fnDef.Name, " Err: ", err)
+		}
+		//fmt.Printf("lordy: %v\n", lordy)
+		if request.Functions == nil {
+			//log.Debug("declaring a functions array for request.")
+			request.Functions = make([]openai.FunctionDefinition, 0)
+		}
+		request.Functions = append(request.Functions, openai.FunctionDefinition{
+			Name:        fnDef.Name,
+			Description: fnDef.Description,
+			Parameters:  parameterIf,
+		})
+
+		functionMap[fnDef.Name] = fnDef.Parameters
+	}
+
 	if config.Temperature != nil {
 		request.Temperature = *config.Temperature
 	}
@@ -225,7 +261,6 @@ func main() {
 	flag.BoolVar(&flags.disableBar, "b", false, "b[ar] Disable the progress bar. Set -b all by itself to disable it.") // Keep this flag to disable the progress bar
 	flag.IntVar(&flags.concurrency, "p", 5, "p[arallel] How many parallel calls to make to OpenAI.")
 	flag.StringVar(&flags.azureEndpoint, "ae", "", "a[zure]e[ndpoint] Set if using Azure. Your OpenAI HTTP Endpoint. Set environment variable 'AZUREAI_API_KEY' to your API key.")
-	flag.StringVar(&flags.azureModelName, "am", "", "a[zure]m[odel] Set if using Azure. Your model deployment name.")
 
 	flag.Parse()
 
@@ -243,7 +278,7 @@ func main() {
 			log.Fatalf("AZUREAI_API_KEY environment variable not set")
 		}
 
-		config := openai.DefaultAzureConfig(azureAPIKey, flags.azureEndpoint, flags.azureModelName)
+		config := openai.DefaultAzureConfig(azureAPIKey, flags.azureEndpoint)
 		client = openai.NewClientWithConfig(config)
 	} else {
 		openAIKey := os.Getenv("OPENAI_API_KEY")
@@ -266,7 +301,7 @@ func main() {
 		bar = nil // Set to nil if the progress bar is disabled
 	}
 
-	requestsChan := make(chan gptparallel.RequestWithCallback)
+	requestsChan := make(chan gptparallel.RequestWithCallback, flags.concurrency*1000)
 
 	if flags.dryRun {
 		gptResultsChan = make(chan gptparallel.RequestResult)
@@ -329,6 +364,38 @@ func main() {
 	}
 	for output := range gptResultsChan {
 		log.Debug("Processing a gptResultsChan")
+		//Validate any function_call against the schema.
+		if output.FunctionName != "" {
+			spec, found := functionMap[output.FunctionName]
+			if !found {
+				log.Info("Model hallucinated a function call.")
+				output.FinishReason = "invalid_function_call"
+			} else {
+				schemaDoc := gojsonschema.NewStringLoader(spec)
+				if output.FunctionParams != "" {
+					fnParams := gojsonschema.NewStringLoader(output.FunctionParams)
+					result, err := gojsonschema.Validate(schemaDoc, fnParams)
+					if err != nil {
+						log.Info("Failed to validate schema/fnparams pair", err)
+						output.FinishReason = "invalid_function_call"
+
+					}
+					if result.Valid() {
+						log.Debug("The params are valid\n")
+					} else {
+						log.Info("The params are not valid. see errors :\n")
+						for _, desc := range result.Errors() {
+							log.Info("- %s\n", desc)
+						}
+						output.FinishReason = "invalid_function_call"
+					}
+				} else {
+					log.Info("Model provided no output params.")
+					output.FinishReason = "invalid_function_call"
+				}
+			}
+		}
+
 		outputBytes, err := json.Marshal(output)
 		if err != nil {
 			log.Errorf("Couldn't marshall response %s", err)

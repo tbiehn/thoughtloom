@@ -1,0 +1,26 @@
+max_tokens = 2000
+model = "gpt-3.5-turbo-0613"
+template_system = "./system.tmpl"
+template_user = "./user.tmpl"
+temperature = 0.2
+top_p = 0.3 
+presence_penalty = 0 
+frequency_penalty = 0 
+
+	
+[[functions]]
+	name = "insert"
+	description = "Insert a row containing the user input in the database"
+	parameters = '''
+{
+	"type": "object",
+	"required": ["content"],
+	"properties": {
+		"content": {
+			"type": "string",
+			"description": "The user's input."
+		},
+		"unit": {"type": "string", "enum": ["celsius", "fahrenheit"]}
+	}
+}
+'''
