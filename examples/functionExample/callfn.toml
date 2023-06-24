@@ -19,8 +19,7 @@ frequency_penalty = 0
 		"content": {
 			"type": "string",
 			"description": "The user's input."
-		},
-		"unit": {"type": "string", "enum": ["celsius", "fahrenheit"]}
+		}
 	}
 }
 '''

@@ -115,8 +115,7 @@ ThoughtLoom supports function calls with capable models (such as `gpt-3.5-turbo-
 		"content": {
 			"type": "string",
 			"description": "The user's input."
-		},
-		"unit": {"type": "string", "enum": ["celsius", "fahrenheit"]}
+		}
 	}
 }
 '''
