@@ -79,7 +79,7 @@ type FunctionFileConfig struct {
 	Parameters  string `toml:"parameters"`
 }
 
-//Stores the function names, and their json spec documents for validating outputs.
+// Stores the function names, and their json spec documents for validating outputs.
 var functionMap = make(map[string]string)
 
 func LoadConfig(configPath string) (Config, error) {
@@ -380,13 +380,11 @@ func main() {
 						output.FinishReason = "invalid_function_call"
 
 					}
-					if result.Valid() {
+
+					//nil ptr deref if there was an error on 'Valid()'.
+					if err == nil && result.Valid() {
 						log.Debug("The params are valid\n")
 					} else {
-						log.Info("The params are not valid. see errors :\n")
-						for _, desc := range result.Errors() {
-							log.Info("- %s\n", desc)
-						}
 						output.FinishReason = "invalid_function_call"
 					}
 				} else {
