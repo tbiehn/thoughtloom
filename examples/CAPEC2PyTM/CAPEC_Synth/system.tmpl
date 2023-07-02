@@ -1,0 +1,220 @@
+Create a new entry for the threat database and insert it. Several examples follow that show well-formed entries.
+
+Condition statements are python boolean predicate statements, evaluated over several target properties.
+## A target has properties; e.g. (target.protocol == 'HTTP' and target.usesSessionTokens is True)
+class Process(Asset):
+    """An entity processing data"""
+
+    codeType = varString("Unmanaged")
+    implementsCommunicationProtocol = varBool(False)
+    tracksExecutionFlow = varBool(False)
+    implementsAPI = varBool(False)
+    environment = varString("")
+    allowsClientSideScripting = varBool(False)
+class Server(Asset):
+    """An entity processing data"""
+
+    usesSessionTokens = varBool(False)
+    usesCache = varBool(False)
+    usesVPN = varBool(False)
+    usesXMLParser = varBool(False)
+class Datastore(Asset):
+    """An entity storing data"""
+
+    onRDS = varBool(False)
+    storesLogData = varBool(False)
+    storesPII = varBool(
+        False,
+        doc="""Personally Identifiable Information
+is any information relating to an identifiable person.""",
+    )
+    storesSensitiveData = varBool(False)
+    isSQL = varBool(True)
+    isShared = varBool(False)
+    hasWriteAccess = varBool(False)
+    type = varDatastoreType(
+        DatastoreType.UNKNOWN,
+        doc="""The  type of Datastore, values may be one of:
+* UNKNOWN - unknown applicable
+* FILE_SYSTEM - files on a file system
+* SQL - A SQL Database
+* LDAP - An LDAP Server
+* AWS_S3 - An S3 Bucket within AWS"""
+    )
+class Lambda(Asset):
+    """A lambda function running in a Function-as-a-Service (FaaS) environment"""
+
+    onAWS = varBool(True)
+    environment = varString("")
+    implementsAPI = varBool(False)
+class ExternalEntity(Asset):
+    hasPhysicalAccess = varBool(False)
+class Dataflow(Element):
+    """A data flow from a source to a sink"""
+
+    source = varElement(None, required=True)
+    sink = varElement(None, required=True)
+    isResponse = varBool(False, doc="Is a response to another data flow")
+    response = varElement(None, doc="Another data flow that is a response to this one")
+    responseTo = varElement(None, doc="Is a response to this data flow")
+    srcPort = varInt(-1, doc="Source TCP port")
+    dstPort = varInt(-1, doc="Destination TCP port")
+    tlsVersion = varTLSVersion(
+        TLSVersion.NONE,
+        required=True,
+        doc="TLS version used.",
+    )
+    protocol = varString("", doc="Protocol used in this data flow")
+    data = varData([], doc="pytm.Data object(s) in incoming data flows")
+    order = varInt(-1, doc="Number of this data flow in the threat model")
+    implementsCommunicationProtocol = varBool(False)
+    note = varString("")
+    usesVPN = varBool(False)
+    usesSessionTokens = varBool(False)
+## A target has controls; e.g. (target.controls.sanitizesInput is False or target.controls.validatesInput is False)
+class Controls:
+    """Controls implemented by/on and Element"""
+
+    authenticatesDestination = varBool(
+        False,
+        doc="""Verifies the identity of the destination,
+for example by verifying the authenticity of a digital certificate.""",
+    )
+    authenticatesSource = varBool(False)
+    authenticationScheme = varString("")
+    authorizesSource = varBool(False)
+    checksDestinationRevocation = varBool(
+        False,
+        doc="""Correctly checks the revocation status
+of credentials used to authenticate the destination""",
+    )
+    checksInputBounds = varBool(False)
+    definesConnectionTimeout = varBool(False)
+    disablesDTD = varBool(False)
+    disablesiFrames = varBool(False)
+    encodesHeaders = varBool(False)
+    encodesOutput = varBool(False)
+    encryptsCookies = varBool(False)
+    encryptsSessionData = varBool(False)
+    handlesCrashes = varBool(False)
+    handlesInterruptions = varBool(False)
+    handlesResourceConsumption = varBool(False)
+    hasAccessControl = varBool(False)
+    implementsAuthenticationScheme = varBool(False)
+    implementsCSRFToken = varBool(False)
+    implementsNonce = varBool(
+        False,
+        doc="""Nonce is an arbitrary number
+that can be used just once in a cryptographic communication.
+It is often a random or pseudo-random number issued in an authentication protocol
+to ensure that old communications cannot be reused in replay attacks.
+They can also be useful as initialization vectors and in cryptographic
+hash functions.""",
+    )
+    implementsPOLP = varBool(
+        False,
+        doc="""The principle of least privilege (PoLP),
+also known as the principle of minimal privilege or the principle of least authority,
+requires that in a particular abstraction layer of a computing environment,
+every module (such as a process, a user, or a program, depending on the subject)
+must be able to access only the information and resources
+that are necessary for its legitimate purpose.""",
+    )
+    implementsServerSideValidation = varBool(False)
+    implementsStrictHTTPValidation = varBool(False)
+    invokesScriptFilters = varBool(False)
+    isEncrypted = varBool(False, doc="Requires incoming data flow to be encrypted")
+    isEncryptedAtRest = varBool(False, doc="Stored data is encrypted at rest")
+    isHardened = varBool(False)
+    isResilient = varBool(False)
+    providesConfidentiality = varBool(False)
+    providesIntegrity = varBool(False)
+    sanitizesInput = varBool(False)
+    tracksExecutionFlow = varBool(False)
+    usesCodeSigning = varBool(False)
+    usesEncryptionAlgorithm = varString("")
+    usesMFA = varBool(
+        False,
+        doc="""Multi-factor authentication is an authentication method
+in which a computer user is granted access only after successfully presenting two
+or more pieces of evidence (or factors) to an authentication mechanism: knowledge
+(something the user and only the user knows), possession (something the user
+and only the user has), and inherence (something the user and only the user is).""",
+    )
+    usesParameterizedInput = varBool(False)
+    usesSecureFunctions = varBool(False)
+    usesStrongSessionIdentifiers = varBool(False)
+    usesVPN = varBool(False)
+    validatesContentType = varBool(False)
+    validatesHeaders = varBool(False)
+    validatesInput = varBool(False)
+    verifySessionIdentifiers = varBool(False)
+## Associated data; e.g. (any(d.credentialsLife in (Lifetime.UNKNOWN, Lifetime.LONG, Lifetime.MANUAL, Lifetime.HARDCODED) for d in target.data))
+class Data:
+    """Represents a single piece of data that traverses the system"""
+
+    name = varString("", required=True)
+    description = varString("")
+    format = varString("")
+    classification = varClassification(
+        Classification.UNKNOWN,
+        required=True,
+        doc="Level of classification for this piece of data",
+    )
+    isPII = varBool(
+        False,
+        doc="""Does the data contain personally identifyable information.
+Should always be encrypted both in transmission and at rest.""",
+    )
+    isCredentials = varBool(
+        False,
+        doc="""Does the data contain authentication information,
+like passwords or cryptographic keys, with or without expiration date.
+Should always be encrypted in transmission. If stored, they should be hashed
+using a cryptographic hash function.""",
+    )
+    credentialsLife = varLifetime(
+        Lifetime.NONE,
+        doc="""Credentials lifetime, describing if and how
+credentials can be revoked. One of:
+* NONE - not applicable
+* UNKNOWN - unknown lifetime
+* SHORT - relatively short expiration date, with an allowed maximum
+* LONG - long or no expiration date
+* AUTO - no expiration date but can be revoked/invalidated automatically
+  in some conditions
+* MANUAL - no expiration date but can be revoked/invalidated manually
+* HARDCODED - cannot be invalidated at all""",
+    )
+    isStored = varBool(
+        False,
+        doc="""Is the data going to be stored by the target or only processed.
+If only derivative data is stored (a hash) it can be set to False.""",
+    )
+    isDestEncryptedAtRest = varBool(False, doc="Is data encrypted at rest at dest")
+    isSourceEncryptedAtRest = varBool(False, doc="Is data encrypted at rest at source")
+    carriedBy = varElements([], doc="Dataflows that carries this piece of data")
+    processedBy = varElements([], doc="Elements that store/process this piece of data")
+    def hasDataLeaks(self):
+        return any(
+            d.classification > self.source.maxClassification
+            or d.classification > self.sink.maxClassification
+            or d.classification > self.maxClassification
+            for d in self.data
+        )
+## Examples
+{{range $val := .identifier.Response}}
+### Example
+"Likelihood Of Attack" {{index $val "Likelihood Of Attack"}}
+"condition" {{$val.condition}}
+"description" {{$val.description}}
+"details" {{$val.details}}
+"example" {{$val.example}}
+"mitigations" {{$val.mitigations}}
+"prerequisites" {{$val.prerequisites}}
+"references" {{$val.references}}
+"severity" {{$val.severity}}
+"target" [
+{{range $sev := $val.target}}{{$sev}}{{end}}
+]
+{{end}}

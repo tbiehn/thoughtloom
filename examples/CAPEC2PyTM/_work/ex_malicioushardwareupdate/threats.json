@@ -1,0 +1,17 @@
+[
+  {
+    "Likelihood Of Attack": "Low",
+    "condition": "target.hasPhysicalAccess is True",
+    "description": "Malicious Hardware Update",
+    "details": "An adversary introduces malicious hardware during an update or replacement procedure, allowing for additional compromise or site disruption at the victim location. After deployment, it is not uncommon for upgrades and replacements to occur involving hardware and various replaceable parts. These upgrades and replacements are intended to correct defects, provide additional features, and to replace broken or worn-out parts. However, by forcing or tricking the replacement of a good component with a defective or corrupted component, an adversary can leverage known defects to obtain a desired malicious impact.",
+    "example": "An attacker could replace a server's hard drive with a similar one that has a malicious firmware. This new hard drive could then compromise the server's operating system or disrupt its operation.",
+    "mitigations": "Implement strict hardware management policies and procedures. This includes tracking all hardware components, regularly inspecting hardware for signs of tampering, and controlling access to hardware. Additionally, use trusted sources for hardware replacements and updates.",
+    "prerequisites": "The adversary has the capability to manipulate the hardware components of the target system. This could involve physical access to the system or the ability to influence the supply chain.",
+    "references": "https://cwe.mitre.org/data/definitions/1194.html",
+    "severity": "High",
+    "target": [
+      "ExternalEntity"
+    ],
+    "SID": "TEST"
+  }
+]

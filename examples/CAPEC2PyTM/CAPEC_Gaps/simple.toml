@@ -1,0 +1,33 @@
+template_system = "./system.tmpl"
+template_user = "./user.tmpl"
+max_tokens = 1000
+model = "gpt-3.5-turbo-0613"
+temperature = 0.5
+
+[[functions]]
+	name = "insert"
+	description = "Flag a threat for insertion"
+	parameters = '''
+{
+  "type": "object",
+  "required": [
+    "id",
+    "name",
+    "reason"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "The threat ID."
+    },
+    "name": {
+      "type": "string",
+      "description": "The name of the threat."
+    },
+    "reason": {
+      "type": "string",
+      "description": "Why the threat must be added."
+    }
+  }
+}
+'''

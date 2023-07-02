@@ -1,0 +1,13 @@
+### Threat
+## ID: {{ index .identifier.Input "@ID"}}
+## NAME: {{ index .identifier.Input "@Name"}}
+## Likelihood: {{.identifier.Input.Likelihood_Of_Attack}}
+## Severity: {{.identifier.Input.Typical_Severity}}
+## Description
+{{.identifier.Input.Description}}
+## Mitigations
+{{.identifier.Input.Mitigations}}
+## Prerequisite
+{{.identifier.Input.Prerequisites}}
+## Related Weaknesses
+{{.identifier.Input.Related_Weaknesses}}

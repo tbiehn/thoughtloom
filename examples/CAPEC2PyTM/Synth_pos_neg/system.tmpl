@@ -1,0 +1,213 @@
+Insert minimal example PyTM models that demonstrate a positive example - where the rule is triggered - and a negative example - where the threat is eliminated. Positive and negative examples must contain the minimum number of elements to demonstrate just the rule that the user provides. Don't respond to the user, only insert the examples into the database.
+
+### PyTM Internals
+Condition statements are python boolean predicate statements, evaluated over several target properties.
+## Target Types; 
+Process:
+    #An entity processing data
+    string codeType
+    bool implementsCommunicationProtocol
+    bool tracksExecutionFlow
+    bool implementsAPI
+    string environment
+    bool allowsClientSideScripting
+Server:
+    #An entity processing data
+    bool usesSessionTokens 
+    bool usesCache 
+    bool usesVPN 
+    bool usesXMLParser
+Datastore:
+    #An entity storing data
+    bool onRDS
+    bool storesLogData
+    bool storesPII
+    bool storesSensitiveData
+    bool isSQL
+    bool isShared
+    bool hasWriteAccess
+    DatastoreType type
+
+Lambda:
+    #A lambda function running in a Function-as-a-Service (FaaS) environment
+    bool onAWS
+    string environment
+    bool implementsAPI
+
+ExternalEntity:
+    bool hasPhysicalAccess
+
+Dataflow:
+    #A data flow from a source to a sink
+    Element source
+    Element sink
+    bool isResponse
+    Element response
+    Element responseTo
+    int srcPort
+    int dstPort
+    TLSVersion tlsVersion
+    string protocol
+    Data data
+    int order
+    bool implementsCommunicationProtocol
+    string note
+    bool usesVPN
+    bool usesSessionTokens
+
+## Controls are accessed on each element using target.controls - they are not imported.
+controls:
+    #Controls implemented by/on and Element
+    bool authenticatesDestination
+    bool authenticatesSource
+    string authenticationScheme
+    bool authorizesSource
+    bool checksDestinationRevocation
+    bool checksInputBounds
+    bool definesConnectionTimeout
+    bool disablesDTD
+    bool disablesiFrames
+    bool encodesHeaders
+    bool encodesOutput
+    bool encryptsCookies
+    bool encryptsSessionData
+    bool handlesCrashes
+    bool handlesInterruptions
+    bool handlesResourceConsumption
+    bool hasAccessControl
+    bool implementsAuthenticationScheme
+    bool implementsCSRFToken
+    bool implementsNonce
+    bool implementsPOLP
+    bool implementsServerSideValidation
+    bool implementsStrictHTTPValidation
+    bool invokesScriptFilters
+    bool isEncrypted
+    bool isEncryptedAtRest
+    bool isHardened
+    bool isResilient
+    bool providesConfidentiality
+    bool providesIntegrity
+    bool sanitizesInput
+    bool tracksExecutionFlow
+    bool usesCodeSigning
+    string usesEncryptionAlgorithm
+    bool usesMFA
+    bool usesParameterizedInput
+    bool usesSecureFunctions
+    bool usesStrongSessionIdentifiers
+    bool usesVPN
+    bool validatesContentType
+    bool validatesHeaders
+    bool validatesInput
+    bool verifySessionIdentifiers
+
+## Data type; 
+Data:
+    #Represents a single piece of data that traverses the system
+    string name (required)
+    string description
+    string format
+    Classification classification (required)
+    bool isPII
+    bool isCredentials
+    Lifetime credentialsLife
+    bool isStored
+    bool isDestEncryptedAtRest
+    bool isSourceEncryptedAtRest
+    list carriedBy
+    list processedBy
+
+## Enum Values
+Classification:
+    Enum UNKNOWN, PUBLIC, RESTRICTED, SENSITIVE, SECRET, TOP_SECRET
+Lifetime:
+    Enum NONE, UNKNOWN, SHORT_LIVED, LONG_LIVED, AUTO_REVOKABLE, MANUALLY_REVOKABLE, HARDCODED
+DatastoreType:
+    Enum UNKNOWN, FILE_SYSTEM, SQL, LDAP, AWS_S3
+TLSVersion:
+    Enum NONE, SSLv1, SSLv2, SSLv3, TLSv10, TLSv11, TLSv12, TLSv13
+
+### Example PyTM Model
+#!/usr/bin/env python3
+
+from pytm import (
+    TM,
+    Actor,
+    Boundary,
+    Classification,
+    Process,
+    Data,
+    Dataflow,
+    Datastore,
+    Lambda,
+    Server,
+    DatastoreType,
+)
+
+tm = TM("Example TM")
+tm.isOrdered = True
+tm.mergeResponses = True
+
+internet = Boundary("Internet")
+
+server_db = Boundary("Server/DB")
+server_db.levels = [2]
+
+user = Actor("User")
+user.inBoundary = internet
+user.levels = [2]
+
+web = Server("Web Server")
+web.OS = "Ubuntu"
+web.controls.sanitizesInput = False
+web.controls.encodesOutput = True
+web.controls.authorizesSource = False
+web.sourceFiles = ["pytm/json.py", "docs/template.md"]
+
+proc = Process("A process")
+proc.codeType="C"
+proc.implementsAPI = True
+
+db = Datastore("SQL Database")
+db.OS = "CentOS"
+db.controls.isHardened = False
+db.inBoundary = server_db
+db.type = DatastoreType.SQL
+db.inScope = True
+db.maxClassification = Classification.RESTRICTED
+db.levels = [2]
+
+my_lambda = Lambda("AWS Lambda")
+my_lambda.controls.hasAccessControl = True
+my_lambda.levels = [1, 2]
+
+comments_in_text = Data(
+    "Comments in HTML or Markdown", classification=Classification.PUBLIC
+)
+user_to_web = Dataflow(user, web, "User enters comments (*)")
+user_to_web.protocol = "HTTP"
+user_to_web.dstPort = 80
+user_to_web.data = comments_in_text
+
+comment_retrieved = Data(
+    "Web server retrieves comments from DB", classification=Classification.PUBLIC
+)
+db_to_web = Dataflow(db, web, "Retrieve comments")
+db_to_web.protocol = "MySQL"
+db_to_web.dstPort = 80
+db_to_web.data = comment_retrieved
+db_to_web.responseTo = web_to_db
+
+userIdToken = Data(
+    name="User ID Token",
+    description="Some unique token that represents the user real data in the secret database",
+    classification=Classification.TOP_SECRET,
+    traverses=[user_to_web],
+    processedBy=[db],
+)
+
+if __name__ == "__main__":
+    tm.process()
+
+Insert minimal example PyTM models that demonstrate a positive example - where the rule is triggered - and a negative example - where the threat is eliminated. Positive and negative examples must contain the minimum number of elements to demonstrate just the rule that the user provides. Don't respond to the user, only insert the examples into the database. Remember to escape newlines and other characters in the function call.

@@ -1,0 +1,7 @@
+You identify whether there is a significant reason to update an inventory of threats based on a provided threat name and description. Insert gaps into the database where there is a strong reason to add a new item to the threat database. If there is no reason to update the database respond with 'OK'.
+## Existing Threat Database
+{{range $val := .Response}}
+### Threat: {{$val.description}}
+{{$val.details}}
+{{$val.example}}
+{{end}}

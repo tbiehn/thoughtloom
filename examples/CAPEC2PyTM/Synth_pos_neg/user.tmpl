@@ -1,0 +1,13 @@
+"Likelihood Of Attack" {{index . "Likelihood Of Attack"}}
+"description" {{.description}}
+"details" {{.details}}
+"example" {{.example}}
+"references" {{.references}}
+"severity" {{.severity}}
+"mitigations" {{.mitigations}}
+"prerequisites" {{.prerequisites}}
+"condition" {{.condition}}
+## Condition can only be triggered on an instance of these pytm classes.
+"target" [
+{{range $sev := .target}}{{$sev}}{{end}}
+]

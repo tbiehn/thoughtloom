@@ -1,0 +1,17 @@
+[
+  {
+    "Likelihood Of Attack": "High",
+    "condition": "target.hasPhysicalAccess is True",
+    "description": "Modification During Manufacture",
+    "details": "An attacker modifies a technology, product, or component during a stage in its manufacture for the purpose of carrying out an attack against some entity involved in the supply chain lifecycle. There are an almost limitless number of ways an attacker can modify a technology when they are involved in its manufacture, as the attacker has potential inroads to the software composition, hardware design and assembly, firmware, or basic design mechanics. Additionally, manufacturing of key components is often outsourced with the final product assembled by the primary manufacturer. The greatest risk, however, is deliberate manipulation of design specifications to produce malicious hardware or devices. There are billions of transistors in a single integrated circuit and studies have shown that fewer than 10 transistors are required to create malicious functionality.",
+    "example": "An attacker working in the manufacturing process of a technology product deliberately modifies the design specifications to introduce a hardware backdoor. This backdoor allows the attacker to remotely access the device once it's in use by the end-user.",
+    "mitigations": "Perform thorough quality and security checks at each stage of the manufacturing process. Use secure manufacturing practices and trusted sources for components. Regularly audit and monitor the manufacturing process for any irregularities.",
+    "prerequisites": "The attacker has access to the manufacturing process of the target technology, product, or component. The attacker has the necessary knowledge and resources to modify the manufacturing process or the product itself without detection.",
+    "references": "https://capec.mitre.org/data/definitions/438.html",
+    "severity": "Very High",
+    "target": [
+      "ExternalEntity"
+    ],
+    "SID": "TEST"
+  }
+]

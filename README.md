@@ -254,6 +254,10 @@ Our whitepaper example creates a 'Table of Contents', then 'fans-out' requests a
 
 Our nuclei2results example processes each nuclei finding in parallel, summarizes, then 'fans-in' to reason across the population of results.
 
+### Function Calling, Embeddings Retrieval, and Specialist LLMs
+
+The CAPEC2PyTM example employs 3 distinct specialist LLM tools, uses Function support, and works with embeddings retrieval.
+
 ## Provided Examples
 
 Check out the following examples in `./examples/`
@@ -277,6 +281,10 @@ This example shows 1-shot prompting that produces a generic code fix policy from
 ### Generate Code Fix Patches from Semgrep Issues
 
 This example shows how to automatically generate policy-following patches for defects identified with semgrep using ThoughtLoom.
+
+### Generate PyTM Threat Modeling Rules for CAPEC Coverage Gaps
+
+This example uses embeddings retrieval and OpenAI functions in a system composed of 3 specialist LLM tools.
 
 ### Generate a Whitepaper
 

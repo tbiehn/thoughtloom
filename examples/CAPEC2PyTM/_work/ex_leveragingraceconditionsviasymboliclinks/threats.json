@@ -1,0 +1,17 @@
+[
+  {
+    "Likelihood Of Attack": "Medium",
+    "condition": "target.usesSymlinks is True and target.controls.validatesInput is False",
+    "description": "Leveraging Race Conditions via Symbolic Links",
+    "details": "This attack leverages the use of symbolic links (Symlinks) in order to write to sensitive files. An attacker can create a Symlink link to a target file not otherwise accessible to them. When the privileged program tries to create a temporary file with the same name as the Symlink link, it will actually write to the target file pointed to by the attackers' Symlink link. If the attacker can insert malicious content in the temporary file they will be writing to the sensitive file by using the Symlink. The race occurs because the system checks if the temporary file exists, then creates the file. The attacker would typically create the Symlink during the interval between the check and the creation of the temporary file.",
+    "example": "An attacker creates a symbolic link from a location writable by them to a target file that they do not have access to. When the privileged program tries to create a temporary file, it actually writes to the target file pointed by the symbolic link. The attacker inserts malicious content in the temporary file, which is then written to the sensitive file.",
+    "mitigations": "Use safe libraries when creating temporary files. For instance the standard library function mkstemp can be used to safely create temporary files. For shell scripts, the system utility mktemp does the same thing. Access to the directories should be restricted as to prevent attackers from manipulating the files. Denying access to a file can prevent an attacker from replacing that file with a link to a sensitive file. Follow the principle of least privilege when assigning access rights to files. Ensure good compartmentalization in the system to provide protected areas that can be trusted.",
+    "prerequisites": "The attacker is able to create Symlink links on the target host. Tainted data from the attacker is used and copied to temporary files. The target host does insecure temporary file creation.",
+    "references": "https://capec.mitre.org/data/definitions/59.html, http://cwe.mitre.org/data/definitions/367.html, http://cwe.mitre.org/data/definitions/61.html, http://cwe.mitre.org/data/definitions/662.html, http://cwe.mitre.org/data/definitions/689.html, http://cwe.mitre.org/data/definitions/667.html",
+    "severity": "High",
+    "target": [
+      "Process"
+    ],
+    "SID": "TEST"
+  }
+]
