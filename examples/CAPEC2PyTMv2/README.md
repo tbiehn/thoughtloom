@@ -1,6 +1,6 @@
 # Generate New PyTM Rules Against Gaps in CAPEC Coverage v2: Revenge of the LLMs.
 
-An enhanced version of [CAPEC2PyTM](https://github.com/tbiehn/thoughtloom/tree/main/examples/CAPEC2PyTM) - this example improves gap recognition by lowering the complexity of gap recognition calls (40x the gaps), and splits the rule creation step into two, first reasoning about the applicable PyTM properties, and then writing the rule itself (by some other impressive amount).
+An enhanced version of [CAPEC2PyTM](https://github.com/tbiehn/thoughtloom/tree/main/examples/CAPEC2PyTM) - this example improves gap recognition by lowering the task complexity (40x the gaps), and splits the rule creation step into two, first reasoning about the applicable PyTM properties, and then writing the rule itself (by some other impressive amount).
 
 Take a months-long adventure down to 40 minutes and ~$100 USD. Pipe it into a backlog. Human in the loop it. This example covers LLM identified gaps between PyTM's rule catalog and MITREs CAPEC using embeddings powered kNN retrieval ([Pinecone](https://www.pinecone.io/) via [embedmeup](https://github.com/tbiehn/embedmeup)). It'll write a PyTM rule, and then produce a positive and negative example for it.
 
