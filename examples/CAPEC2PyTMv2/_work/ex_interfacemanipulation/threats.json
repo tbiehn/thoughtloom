@@ -1,0 +1,18 @@
+[
+  {
+    "Likelihood Of Attack": "Medium",
+    "condition": "target.implementsAPI is True and (target.controls.validatesInput is False or target.controls.sanitizesInput is False)",
+    "description": "Interface Manipulation",
+    "details": "An adversary manipulates the use or processing of an interface (e.g. Application Programming Interface (API) or System-on-Chip (SoC)) resulting in an adverse impact upon the security of the system implementing the interface. This can allow the adversary to bypass access control and/or execute functionality not intended by the interface implementation, possibly compromising the system which integrates the interface. Interface manipulation can take on a number of forms including forcing the unexpected use of an interface or the use of an interface in an unintended way.",
+    "example": "An attacker may manipulate the API of a web application to bypass authentication and gain unauthorized access to sensitive information.",
+    "mitigations": "Implement robust input validation and sanitization for all user inputs. Use encryption to protect sensitive data. Regularly update and patch systems to fix known vulnerabilities. Use secure coding practices to prevent common security issues.",
+    "prerequisites": "The target system must expose interface functionality in a manner that can be discovered and manipulated by an adversary. This may require reverse engineering the interface or decrypting/de-obfuscating client-server exchanges.",
+    "references": "https://cwe.mitre.org/data/definitions/1192.html",
+    "severity": "Medium",
+    "target": [
+      "Process",
+      "Lambda"
+    ],
+    "SID": "TEST"
+  }
+]

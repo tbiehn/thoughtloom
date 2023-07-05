@@ -48,7 +48,7 @@ cat _work/CAPEC_Enhanced.json | thoughtloom -c ./CAPEC_Gaps/simple.toml -p 10 | 
 jq -n 'inputs | select(.finish_reason == "function_call") | .function_params |= fromjson | .identifier |= fromjson' _work/CAPEC_Run.json | thoughtloom -c ./CAPEC_Synth/simple.toml | tee _work/CAPEC_Synth.json | jq
 
 # Step 8: Generate PyTM positive and negative model examples for each new PyTM threat.
-cat _work/CAPEC_Synth.json | jq -r .function_params | thoughtloom -c ./Synth_pos_neg/simple.toml | tee _work/posneg.json | jq
+jq -r 'select(.finish_reason=="function_call")|.function_params' _work/CAPEC_Synth.json |  thoughtloom -c ./Synth_pos_neg/simple.toml | tee _work/posneg.json | jq
 
 # Step 9: Put each threat rule, positive, and negative example into its own directory.
 jq 'select(.finish_reason == "function_call") | .function_params = (.function_params | fromjson) + {input: .identifier| fromjson} | .function_params' _work/posneg.json | jq -c -s '.[]' | while read -r line; do

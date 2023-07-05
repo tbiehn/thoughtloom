@@ -286,6 +286,10 @@ This example shows how to automatically generate policy-following patches for de
 
 This example uses embeddings retrieval and OpenAI functions in a system composed of 3 specialist LLM tools.
 
+### Generate PyTM Threat Modeling Rules Against Gaps in CAPEC Coverage v2: Revenge of the LLMs.
+
+This example shows easy gains made on the performance of the first. The sequel is '40 times better'.
+
 ### Generate a Whitepaper
 
 This example demonstrates how to use ThoughtLoom to generate a full whitepaper from just a few bullet points.

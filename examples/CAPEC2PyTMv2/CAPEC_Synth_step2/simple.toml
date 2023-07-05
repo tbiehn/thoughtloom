@@ -1,0 +1,93 @@
+template_system = "./system.tmpl"
+template_user = "./user.tmpl"
+max_tokens = 1500
+model = "gpt-4-0613"
+temperature = 0.5
+presence_penalty = 0.1
+frequency_penalty = 0.1
+
+[[functions]]
+	name = "insert"
+	description = "Insert a new threat"
+	parameters = '''
+{
+  "type": "object",
+  "properties": {
+    "Likelihood Of Attack": {
+      "type": "string",
+      "description": "How likely an attacker is to exploit this weakness.",
+      "enum": [
+        "Low",
+        "Medium",
+        "High",
+        "Very High"
+      ]
+    },
+    "condition": {
+      "type": "string",
+      "description": "Conditions that indicate a threat that does not have appropriate controls."
+    },
+    "description": {
+      "type": "string",
+      "description": "A short name for this threat."
+    },
+    "details": {
+      "type": "string",
+      "description": "A short description of the threat."
+    },
+    "example": {
+      "type": "string",
+      "description": "An example of how an actor leverages the threat."
+    },
+    "mitigations": {
+      "type": "string",
+      "description": "Generically, how an engineer can address the threat."
+    },
+    "prerequisites": {
+      "type": "string",
+      "description": "The conditions for the threat."
+    },
+    "references": {
+      "type": "string",
+      "description": "A set of URLs to CWE, or CAPEC websites describing the threat."
+    },
+    "severity": {
+      "type": "string",
+      "description": "The impact of the threat.",
+      "enum": [
+        "Low",
+        "Medium",
+        "High",
+        "Very High"
+      ]
+    },
+    "target": {
+      "type": "array",
+      "description": "The target types that the threat applies to.",
+      "items": {
+        "type": "string",
+        "enum": [
+          "Process",
+          "Server",
+          "Datastore",
+          "Lambda",
+          "ExternalEntity",
+          "Dataflow"
+        ]
+      }
+    }
+  },
+  "required": [
+    "Likelihood Of Attack",
+    "condition",
+    "description",
+    "details",
+    "example",
+    "mitigations",
+    "prerequisites",
+    "references",
+    "severity",
+    "target"
+  ]
+}
+'''

@@ -1,0 +1,19 @@
+[
+  {
+    "Likelihood Of Attack": "High",
+    "condition": "target.controls.validatesInput is False or target.controls.sanitizesInput is False",
+    "description": "Reflection Injection",
+    "details": "An adversary supplies a value to the target application which is then used by reflection methods to identify a class, method, or field. For example, in the Java programming language the reflection libraries permit an application to inspect, load, and invoke classes and their components by name. If an adversary can control the input into these methods including the name of the class/method/field or the parameters passed to methods, they can cause the targeted application to invoke incorrect methods, read random fields, or even to load and utilize malicious classes that the adversary created. This can lead to the application revealing sensitive information, returning incorrect results, or even having the adversary take control of the targeted application.",
+    "example": "The target application accepts a string as user input, fails to sanitize characters that have a special meaning in the parameter encoding, and inserts the user-supplied string in an encoding which is then processed.",
+    "mitigations": "Implement an audit log written to a separate host. In the event of a compromise, the audit log may be able to provide evidence and details of the compromise. Treat all user input as untrusted data that must be validated before use.",
+    "prerequisites": "The target application must utilize reflection libraries and allow users to directly control the parameters to these methods. If the adversary can host classes where the target can invoke them, more powerful variants of this attack are possible. The target application must accept a string as user input, fail to sanitize characters that have a special meaning in the parameter encoding, and insert the user-supplied string in an encoding which is then processed.",
+    "references": "https://cwe.mitre.org/data/definitions/470.html",
+    "severity": "Very High",
+    "target": [
+      "Process",
+      "Server",
+      "Lambda"
+    ],
+    "SID": "TEST"
+  }
+]

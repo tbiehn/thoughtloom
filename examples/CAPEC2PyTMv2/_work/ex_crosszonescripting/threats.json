@@ -1,0 +1,18 @@
+[
+  {
+    "Likelihood Of Attack": "Medium",
+    "condition": "target.allowsClientSideScripting is True and (target.controls.sanitizesInput is False or target.controls.validatesInput is False or target.controls.encodesOutput is False)",
+    "description": "Cross Zone Scripting",
+    "details": "An attacker is able to cause a victim to load content into their web-browser that bypasses security zone controls and gain access to increased privileges to execute scripting code or other web objects such as unsigned ActiveX controls or applets. This is a privilege elevation attack targeted at zone-based web-browser security.",
+    "example": "An attacker sends a link to a victim that, when clicked, loads a page in the Internet zone that has a script which references a privileged object in the Local Machine zone. The script is executed with the privileges of the Local Machine zone and can perform actions that the Internet zone scripts are not allowed to perform.",
+    "mitigations": "Disable script execution. Ensure that sufficient input validation is performed for any potentially untrusted data before it is used in any privileged context or zone. Limit the flow of untrusted data into the privileged areas of the system that run in the higher trust zone. Limit the sites that are being added to the local machine zone and restrict the privileges of the code running in that zone to the bare minimum. Ensure proper HTML output encoding before writing user supplied data to the page.",
+    "prerequisites": "The target must be using a zone-aware browser.",
+    "references": "http://cwe.mitre.org/data/definitions/250.html, http://cwe.mitre.org/data/definitions/638.html, http://cwe.mitre.org/data/definitions/285.html, http://cwe.mitre.org/data/definitions/116.html, http://cwe.mitre.org/data/definitions/20.html",
+    "severity": "High",
+    "target": [
+      "Process",
+      "Server"
+    ],
+    "SID": "TEST"
+  }
+]

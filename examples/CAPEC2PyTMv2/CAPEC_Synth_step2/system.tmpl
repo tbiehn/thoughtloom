@@ -1,0 +1,147 @@
+Create a new entry for the threat database and insert it. Several examples follow that show well-formed entries.
+
+### PyTM Internals
+Condition statements are python boolean predicate statements, evaluated over several target properties.
+## Target Types; 
+Process:
+    #An entity processing data
+    string codeType
+    bool implementsCommunicationProtocol
+    bool tracksExecutionFlow
+    bool implementsAPI
+    string environment
+    bool allowsClientSideScripting
+Server:
+    #An entity processing data
+    bool usesSessionTokens 
+    bool usesCache 
+    bool usesVPN 
+    bool usesXMLParser
+Datastore:
+    #An entity storing data
+    bool onRDS
+    bool storesLogData
+    bool storesPII
+    bool storesSensitiveData
+    bool isSQL
+    bool isShared
+    bool hasWriteAccess
+    DatastoreType type
+
+Lambda:
+    #A lambda function running in a Function-as-a-Service (FaaS) environment
+    bool onAWS
+    string environment
+    bool implementsAPI
+
+ExternalEntity:
+    bool hasPhysicalAccess
+
+Dataflow:
+    #A data flow from a source to a sink
+    Element source
+    Element sink
+    bool isResponse
+    Element response
+    Element responseTo
+    int srcPort
+    int dstPort
+    TLSVersion tlsVersion
+    string protocol
+    Data data
+    int order
+    bool implementsCommunicationProtocol
+    string note
+    bool usesVPN
+    bool usesSessionTokens
+
+## Controls are accessed on each element using target.controls - they are not imported.
+controls:
+    #Controls implemented by/on and Element
+    bool authenticatesDestination
+    bool authenticatesSource
+    string authenticationScheme
+    bool authorizesSource
+    bool checksDestinationRevocation
+    bool checksInputBounds
+    bool definesConnectionTimeout
+    bool disablesDTD
+    bool disablesiFrames
+    bool encodesHeaders
+    bool encodesOutput
+    bool encryptsCookies
+    bool encryptsSessionData
+    bool handlesCrashes
+    bool handlesInterruptions
+    bool handlesResourceConsumption
+    bool hasAccessControl
+    bool implementsAuthenticationScheme
+    bool implementsCSRFToken
+    bool implementsNonce
+    bool implementsPOLP
+    bool implementsServerSideValidation
+    bool implementsStrictHTTPValidation
+    bool invokesScriptFilters
+    bool isEncrypted
+    bool isEncryptedAtRest
+    bool isHardened
+    bool isResilient
+    bool providesConfidentiality
+    bool providesIntegrity
+    bool sanitizesInput
+    bool tracksExecutionFlow
+    bool usesCodeSigning
+    string usesEncryptionAlgorithm
+    bool usesMFA
+    bool usesParameterizedInput
+    bool usesSecureFunctions
+    bool usesStrongSessionIdentifiers
+    bool usesVPN
+    bool validatesContentType
+    bool validatesHeaders
+    bool validatesInput
+    bool verifySessionIdentifiers
+
+## Data type; 
+Data:
+    #Represents a single piece of data that traverses the system
+    string name (required)
+    string description
+    string format
+    Classification classification (required)
+    bool isPII
+    bool isCredentials
+    Lifetime credentialsLife
+    bool isStored
+    bool isDestEncryptedAtRest
+    bool isSourceEncryptedAtRest
+    list carriedBy
+    list processedBy
+
+## Enum Values
+Classification:
+    Enum UNKNOWN, PUBLIC, RESTRICTED, SENSITIVE, SECRET, TOP_SECRET
+Lifetime:
+    Enum NONE, UNKNOWN, SHORT_LIVED, LONG_LIVED, AUTO_REVOKABLE, MANUALLY_REVOKABLE, HARDCODED
+DatastoreType:
+    Enum UNKNOWN, FILE_SYSTEM, SQL, LDAP, AWS_S3
+TLSVersion:
+    Enum NONE, SSLv1, SSLv2, SSLv3, TLSv10, TLSv11, TLSv12, TLSv13
+
+## Examples
+{{range $val := .identifier.identifier.Response}}
+### Example
+"Likelihood Of Attack" {{index $val "Likelihood Of Attack"}}
+"condition" {{$val.condition}}
+"description" {{$val.description}}
+"details" {{$val.details}}
+"example" {{$val.example}}
+"mitigations" {{$val.mitigations}}
+"prerequisites" {{$val.prerequisites}}
+"references" {{$val.references}}
+"severity" {{$val.severity}}
+"target" [
+{{range $sev := $val.target}}{{$sev}}, {{end}}
+]
+{{end}}
+{{.response}}

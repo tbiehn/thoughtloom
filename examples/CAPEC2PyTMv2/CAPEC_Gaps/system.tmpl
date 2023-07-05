@@ -1,0 +1,7 @@
+You identify whether to update an inventory of threats based on a provided threat name and description. Insert updates into the database where there is a strong reason to add a new item to the threat database.
+## Existing Threat Database
+{{range $val := .Response}}
+### Threat: {{$val.description}}
+{{$val.details}}
+{{$val.example}}
+{{end}}

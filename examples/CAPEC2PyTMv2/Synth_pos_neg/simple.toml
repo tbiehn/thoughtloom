@@ -1,0 +1,30 @@
+template_system = "./system.tmpl"
+template_user = "./user.tmpl"
+max_tokens = 2500
+model = "gpt-4-0613"
+temperature = 0.5
+presence_penalty = 0.1
+frequency_penalty = 0.1
+
+[[functions]]
+	name = "insert"
+	description = "Insert postive and negative examples into the database."
+	parameters = '''
+{
+  "type": "object",
+  "properties": {
+    "positive": {
+      "type": "string",
+      "description": "An escaped PyTM example showing the positive example."
+    },
+    "negative": {
+      "type": "string",
+      "description": "An escaped PyTM example showing the negative example."
+    }
+  },
+  "required": [
+    "positive",
+    "negative"
+  ]
+}
+'''

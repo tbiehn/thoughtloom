@@ -1,0 +1,17 @@
+[
+  {
+    "Likelihood Of Attack": "High",
+    "condition": "target.controls.hasAccessControl is False or target.controls.validatesInput is False",
+    "description": "Directory Indexing",
+    "details": "An adversary crafts a request to a target that results in the target listing/indexing the content of a directory as output. One common method of triggering directory contents as output is to construct a request containing a path that terminates in a directory name rather than a file name since many applications are configured to provide a list of the directory's contents when such a request is received. An adversary can use this to explore the directory tree on a target as well as learn the names of files. This can often end up revealing test files, backup files, temporary files, hidden files, configuration files, user accounts, script contents, as well as naming conventions, all of which can be used by an attacker to mount additional attacks.",
+    "example": "An attacker sends a request to http://example.com/directory/ and receives a listing of all files within that directory. This reveals sensitive information such as configuration files or backup files that the attacker can then access directly.",
+    "mitigations": "1. Using blank index.html: putting blank index.html simply prevent directory listings from displaying to site visitors. 2. Preventing with .htaccess in Apache web server: In .htaccess, write 'Options -Indexes'. 3. Suppressing error messages: using error 403 'Forbidden' message exactly like error 404 'Not Found' message.",
+    "prerequisites": "The target must be misconfigured to return a list of a directory's content when it receives a request that ends in a directory name rather than a file name. The adversary must be able to control the path that is requested of the target. The administrator must have failed to properly configure an ACL or has associated an overly permissive ACL with a particular directory. The server version or patch level must not inherently prevent known directory listing attacks from working.",
+    "references": "https://capec.mitre.org/data/definitions/127.html, http://cwe.mitre.org/data/definitions/425.html",
+    "severity": "Medium",
+    "target": [
+      "Server"
+    ],
+    "SID": "TEST"
+  }
+]

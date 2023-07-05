@@ -1,0 +1,18 @@
+[
+  {
+    "Likelihood Of Attack": "Medium",
+    "condition": "target.codeType == 'Web server' and target.implementsAPI and target.controls.validatesInput is False and target.controls.sanitizesInput is False and target.controls.implementsAuthenticationScheme is False and target.controls.hasAccessControl is False",
+    "description": "Cause Web Server Misclassification",
+    "details": "An attack of this type exploits a Web server's decision to take action based on filename or file extension. Because different file types are handled by different server processes, misclassification may force the Web server to take unexpected action, or expected actions in an unexpected sequence. This may cause the server to exhaust resources, supply debug or system data to the attacker, or bind an attacker to a remote process.",
+    "example": "An attacker sends a HTTP request to a web server with a file name or extension that causes the server to take unexpected action. This could lead to resource exhaustion, leakage of debug or system data, or binding the attacker to a remote process.",
+    "mitigations": "Server routines should be determined by content not determined by filename or file extension. Implement input validation and sanitization. Implement an authentication scheme and access control.",
+    "prerequisites": "Web server software must rely on file name or file extension for processing. The attacker must be able to make HTTP requests to the web server.",
+    "references": "http://cwe.mitre.org/data/definitions/430.html",
+    "severity": "High",
+    "target": [
+      "Process",
+      "Server"
+    ],
+    "SID": "TEST"
+  }
+]
