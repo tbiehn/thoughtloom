@@ -46,13 +46,13 @@ cat _work/CAPEC_Enhanced.json | thoughtloom -c ./CAPEC_Gaps/simple.toml -p 10 | 
 
 # Step 7: Select gaps which must be addressed, and ask the model to identify the relevant PyTM properties for each threat.
 # NOTE: I've limited this to the top 10 results, otherwise people will accidentally spend $60 in credits.
-jq -c 'select(.finish_reason=="function_call")|.function_params |= fromjson | .identifier |= fromjson | select(.function_params.insert==true)' CAPEC_Run.json | head -10 | thoughtloom -c ./CAPEC_Synth_step1/simple.toml | tee CAPEC_Synth_new_step1.json
+jq -c 'select(.finish_reason=="function_call")|.function_params |= fromjson | .identifier |= fromjson | select(.function_params.insert==true)' _work/CAPEC_Run.json | head -10 | thoughtloom -c ./CAPEC_Synth_step1/simple.toml | tee _work/CAPEC_Synth_step1.json
 
 # Step 8: Generate a fully-formed PyTM threat entry, considering the PyTM properties identified in step 7.
- jq -n 'inputs | select(.finish_reason == "stop") | .identifier |= fromjson' _work/CAPEC_Synth_step1.json | thoughtloom -c CAPEC_Synth_step2/simple.toml| tee CAPEC_Synth_step2.json | jq
+jq -n 'inputs | select(.finish_reason == "stop") | .identifier |= fromjson' _work/CAPEC_Synth_step1.json | thoughtloom -c CAPEC_Synth_step2/simple.toml| tee _work/CAPEC_Synth_step2.json | jq
 
 # Step 9: Generate PyTM positive and negative model examples for each new PyTM threat.
-cat _work/CAPEC_Synth.json | jq -r .function_params | thoughtloom -c ./Synth_pos_neg/simple.toml | tee _work/posneg.json | jq
+jq -r 'select(.finish_reason=="function_call")|.function_params' _work/CAPEC_Synth_step2.json | thoughtloom -c ./Synth_pos_neg/simple.toml | tee _work/posneg.json | jq
 
 # Step 10: Put each threat rule, positive, and negative example into its own directory.
 jq 'select(.finish_reason == "function_call") | .function_params = (.function_params | fromjson) + {input: .identifier| fromjson} | .function_params' _work/posneg.json | jq -c -s '.[]' | while read -r line; do
