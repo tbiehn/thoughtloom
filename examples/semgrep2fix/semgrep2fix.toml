@@ -1,5 +1,5 @@
 max_tokens = 2000
-model = "gpt-4"
+model = "gpt-4o"
 template_system = "./system.tmpl"
 temperature = 0.2
 top_p = 0.3 

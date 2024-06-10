@@ -1,4 +1,4 @@
 template_system = "./system.tmpl"
 template_user = "./user.tmpl"
 max_tokens = 1000
-model = "gpt-4"
+model = "gpt-4o"
