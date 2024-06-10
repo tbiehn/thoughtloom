@@ -1,7 +1,7 @@
 template_system = "./system.tmpl"
 template_user = "./user.tmpl"
 max_tokens = 2500
-model = "gpt-4-0613"
+model = "gpt-4o"
 temperature = 0.5
 presence_penalty = 0.1
 frequency_penalty = 0.1
